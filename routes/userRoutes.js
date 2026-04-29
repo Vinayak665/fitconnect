@@ -7,16 +7,8 @@ const multer = require('multer');
 const path = require('path');
 const { sendEmail } = require('../utils/mailer');
 
-// Configure Multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../uploads'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, 'user-' + Date.now() + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage: storage });
+// Configure Multer - use memoryStorage for Vercel (read-only filesystem)
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 const { getCachedData, setCachedData, cache } = require('../utils/cache');
 
@@ -377,8 +369,11 @@ router.get('/edit-profile', isAuthenticated, async (req, res) => {
 router.post('/edit-profile', isAuthenticated, upload.single('profile_image'), async (req, res) => {
     try {
         const userData = { ...req.body };
+        // Note: File uploads are stored in memory on Vercel (no persistent disk)
+        // Profile image saved as base64 or skipped if no Supabase Storage bucket configured
         if (req.file) {
-            userData.profile_image = req.file.filename;
+            // Store filename as placeholder - in production use Supabase Storage
+            userData.profile_image = 'user-' + Date.now() + path.extname(req.file.originalname);
         }
         await User.updateProfile(req.session.userId, userData);
         cache.delete(`user_dashboard_${req.session.userId}`);

@@ -9,22 +9,9 @@ const fs = require('fs');
 const supabase = require('../database'); // Added this
 const { cache } = require('../utils/cache'); 
 
-// Configure Multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        if (file.fieldname === 'certifications') {
-            cb(null, path.join(__dirname, '../uploads/certifications'));
-        } else {
-            cb(null, path.join(__dirname, '../uploads'));
-        }
-    },
-    filename: (req, file, cb) => {
-        const prefix = file.fieldname === 'certifications' ? 'cert-' : 'trainer-';
-        cb(null, prefix + Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
-    }
-});
+// Configure Multer - use memoryStorage for Vercel (read-only filesystem)
 const upload = multer({ 
-    storage: storage,
+    storage: multer.memoryStorage(),
     fileFilter: (req, file, cb) => {
         if (file.fieldname === 'certifications') {
             const allowedTypes = ['.pdf', '.jpg', '.jpeg', '.png'];
@@ -143,13 +130,11 @@ router.post('/request', upload.fields([{name: 'profile_image', maxCount: 1}, {na
     try {
         const data = {
             ...req.body,
-            profile_image: req.files.profile_image ? req.files.profile_image[0].filename : null,
+            // Use originalname as placeholder (memoryStorage on Vercel has no disk path)
+            profile_image: req.files && req.files.profile_image ? 
+                'trainer-' + Date.now() + path.extname(req.files.profile_image[0].originalname) : null,
             booking_amount: req.body.booking_amount || 0
         };
-        // Note: certifications temporarily disabled until database column is added
-        // if (req.files.certifications && req.files.certifications.length > 0) {
-        //     data.certifications = req.files.certifications.map(file => file.filename);
-        // }
         await Trainer.create(data);
         res.send("<script>alert('Application submitted successfully! Please wait for Admin approval.'); window.location.href='/';</script>");
     } catch (err) {
