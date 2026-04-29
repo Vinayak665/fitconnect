@@ -1,0 +1,27 @@
+# Environment Variables - NEVER push this
+.env
+.env.local
+.env.production
+
+# Dependencies
+node_modules/
+
+# SQLite local DB (using Supabase in production)
+*.db
+*.sqlite
+
+# Logs
+error_log.txt
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Uploads (will use Supabase Storage in production)
+uploads/*
+!uploads/.gitkeep
+
+# TypeScript build output
+dist/
+build/

@@ -1,0 +1,731 @@
+<mxfile host="65bd71144e">
+    <diagram id="-Hqv-RgeM8Zz-VyX1Y0Y" name="Page-1">
+        <mxGraphModel dx="626" dy="710" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="USER" value="User" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontStyle=1;fontSize=18;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="380" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="BOOKING" value="Booking" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontStyle=1;fontSize=18;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="120" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="ADMIN" value="Admin" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=18;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="360" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="TRAINER" value="Trainer" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=18;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="630" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="PAYMENT" value="&lt;font color=&quot;#000000&quot;&gt;Payment&lt;/font&gt;" style="rounded=0;html=1;fillColor=#FAFCFF;strokeColor=#FFFAFD;fontStyle=1;fontSize=18;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="630" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_MAKES_UB" value="makes" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="340" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_RECEIVES" value="receives" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1060" y="230" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_ASSIGNED" value="assigned to" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="740" y="440" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_MAKES_UP" value="makes" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="130" y="540" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_HAS" value="has" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="430" y="480" width="140" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_APPROVES" value="approves" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="1110" y="530" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_MANAGES" value="manages" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" parent="1" vertex="1">
+                    <mxGeometry x="410" y="870" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" style="endArrow=none;" parent="1" source="USER" target="R_MAKES_UB" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1L" value="1" style="text;fontSize=12;fontStyle=1;" parent="e1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e2" style="endArrow=none;" parent="1" source="R_MAKES_UB" target="BOOKING" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2L" value="N" style="text;fontSize=12;fontStyle=1;" parent="e2" vertex="1" connectable="0">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e3" style="endArrow=none;" parent="1" source="BOOKING" target="R_RECEIVES" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3L" value="N" style="text;fontSize=12;fontStyle=1;" parent="e3" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e4" style="endArrow=none;" parent="1" source="R_RECEIVES" target="ADMIN" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e4L" value="1" style="text;fontSize=12;fontStyle=1;" parent="e4" vertex="1" connectable="0">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e5" style="endArrow=none;" parent="1" source="BOOKING" target="R_ASSIGNED" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e5L" value="N" style="text;fontSize=12;fontStyle=1;" parent="e5" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e6" style="endArrow=none;" parent="1" source="R_ASSIGNED" target="TRAINER" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e6L" value="1" style="text;fontSize=12;fontStyle=1;" parent="e6" vertex="1" connectable="0">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e7" style="endArrow=none;" parent="1" source="USER" target="R_MAKES_UP" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e7L" value="1" style="text;fontSize=12;fontStyle=1;" parent="e7" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e8" style="endArrow=none;" parent="1" source="R_MAKES_UP" target="PAYMENT" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e8L" value="N" style="text;fontSize=12;fontStyle=1;" parent="e8" vertex="1" connectable="0">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e9" style="endArrow=none;" parent="1" source="PAYMENT" target="R_HAS" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e9L" value="1" style="text;fontSize=12;fontStyle=1;" parent="e9" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e10" style="endArrow=none;" parent="1" source="R_HAS" target="BOOKING" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e10L" value="1" style="text;fontSize=12;fontStyle=1;" parent="e10" vertex="1" connectable="0">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e11" style="endArrow=none;" parent="1" source="ADMIN" target="R_APPROVES" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e11L" value="1" style="text;fontSize=12;fontStyle=1;" parent="e11" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e12" style="endArrow=none;" parent="1" source="R_APPROVES" target="TRAINER" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e12L" value="N" style="text;fontSize=12;fontStyle=1;" parent="e12" vertex="1" connectable="0">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e13" style="endArrow=none;" parent="1" source="PAYMENT" target="R_MANAGES" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e13L" value="N" style="text;fontSize=12;fontStyle=1;" parent="e13" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;" vertex="1" connectable="0" parent="e13">
+                    <mxGeometry x="0.4208" y="3" relative="1" as="geometry">
+                        <mxPoint y="-1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e14" style="endArrow=none;" parent="1" source="R_MANAGES" target="TRAINER" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e14L" value="1" style="text;fontSize=12;fontStyle=1;" parent="e14" vertex="1" connectable="0">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="AU1" value="&lt;u&gt;user id&lt;/u&gt;" style="ellipse;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="10" y="310" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU2" value="name" style="ellipse;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="155" y="265" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU3" value="email" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="255" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU4" value="city" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="185" y="335" width="80" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU5" value="password" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="10" y="480" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU6" value="contact no." style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="490" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU1" style="endArrow=none;" parent="1" source="USER" target="AU1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU2" style="endArrow=none;" parent="1" source="USER" target="AU2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU3" style="endArrow=none;" parent="1" source="USER" target="AU3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU4" style="endArrow=none;" parent="1" source="USER" target="AU4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU5" style="endArrow=none;" parent="1" source="USER" target="AU5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU6" style="endArrow=none;" parent="1" source="USER" target="AU6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="AB1" value="&lt;u&gt;booki id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="20" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AB2" value="preferred time" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="15" width="130" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AB3" value="booking date" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="40" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AB4" value="session duration" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="120" width="145" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB1" style="endArrow=none;" parent="1" source="BOOKING" target="AB1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB2" style="endArrow=none;" parent="1" source="BOOKING" target="AB2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB3" style="endArrow=none;" parent="1" source="BOOKING" target="AB3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB4" style="endArrow=none;" parent="1" source="BOOKING" target="AB4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="AA1" value="&lt;u&gt;admin id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="265" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AA2" value="email id" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="430" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AA3" value="password" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1450" y="340" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAA1" style="endArrow=none;" parent="1" source="ADMIN" target="AA1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAA2" style="endArrow=none;" parent="1" source="ADMIN" target="AA2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAA3" style="endArrow=none;" parent="1" source="ADMIN" target="AA3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT1" value="&lt;u&gt;trainer id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="770" width="130" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT2" value="fees" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="560" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT3" value="certificate" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="600" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT4" value="experience" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="680" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT5" value="city" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="760" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT6" value="password" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="770" y="770" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT7" value="email id" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="580" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT8" value="name" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="660" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT9" value="contact no." style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="745" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT10" value="approved or reject" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="810" width="155" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT1" style="endArrow=none;" parent="1" source="TRAINER" target="AT1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT2" style="endArrow=none;" parent="1" source="TRAINER" target="AT2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT3" style="endArrow=none;" parent="1" source="TRAINER" target="AT3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT4" style="endArrow=none;" parent="1" source="TRAINER" target="AT4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT5" style="endArrow=none;" parent="1" source="TRAINER" target="AT5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT6" style="endArrow=none;" parent="1" source="TRAINER" target="AT6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT7" style="endArrow=none;" parent="1" source="TRAINER" target="AT7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT8" style="endArrow=none;" parent="1" source="TRAINER" target="AT8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT9" style="endArrow=none;" parent="1" source="TRAINER" target="AT9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT10" style="endArrow=none;" parent="1" source="TRAINER" target="AT10" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP1" value="&lt;u&gt;payment id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="10" y="700" width="125" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP2" value="&lt;u&gt;#user id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="760" width="115" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP3" value="amount" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="10" y="570" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP4" value="payment date" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="305" y="610" width="130" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP5" value="payment status" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="305" y="695" width="135" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP1" style="endArrow=none;" parent="1" source="PAYMENT" target="AP1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP2" style="endArrow=none;" parent="1" source="PAYMENT" target="AP2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP3" style="endArrow=none;" parent="1" source="PAYMENT" target="AP3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP4" style="endArrow=none;" parent="1" source="PAYMENT" target="AP4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP5" style="endArrow=none;" parent="1" source="PAYMENT" target="AP5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="zyhi2ajBMNuW19Eff3w0" name="Page-1">
+        <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <!-- ENTITIES -->
+                <mxCell id="USER" value="User" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+                    <mxGeometry x="120" y="380" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="BOOKING" value="Booking" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+                    <mxGeometry x="660" y="120" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="ADMIN" value="Admin" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+                    <mxGeometry x="1280" y="360" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="TRAINER" value="Trainer" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+                    <mxGeometry x="660" y="630" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="PAYMENT" value="Payment" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+                    <mxGeometry x="120" y="630" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <!-- RELATIONSHIPS -->
+                <mxCell id="R_MAKES_UB" value="makes" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" vertex="1" parent="1">
+                    <mxGeometry x="460" y="340" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_RECEIVES" value="receives" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" vertex="1" parent="1">
+                    <mxGeometry x="1060" y="230" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_ASSIGNED" value="assigned to" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" vertex="1" parent="1">
+                    <mxGeometry x="740" y="440" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_MAKES_UP" value="makes" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" vertex="1" parent="1">
+                    <mxGeometry x="125" y="510" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_HAS" value="has" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" vertex="1" parent="1">
+                    <mxGeometry x="430" y="480" width="140" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_APPROVES" value="approves" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" vertex="1" parent="1">
+                    <mxGeometry x="1110" y="530" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="R_MANAGES" value="manages" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" vertex="1" parent="1">
+                    <mxGeometry x="530" y="820" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <!-- EDGES: User 1 to N Booking via makes -->
+                <mxCell id="e1" style="endArrow=none;" edge="1" source="USER" target="R_MAKES_UB" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e1">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e2" style="endArrow=none;" edge="1" source="R_MAKES_UB" target="BOOKING" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2L" value="N" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e2">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <!-- EDGES: Booking N to 1 Admin via receives -->
+                <mxCell id="e3" style="endArrow=none;" edge="1" source="BOOKING" target="R_RECEIVES" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3L" value="N" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e3">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e4" style="endArrow=none;" edge="1" source="R_RECEIVES" target="ADMIN" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e4L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e4">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <!-- EDGES: Booking N to 1 Trainer via assigned to -->
+                <mxCell id="e5" style="endArrow=none;" edge="1" source="BOOKING" target="R_ASSIGNED" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e5L" value="N" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e5">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e6" style="endArrow=none;" edge="1" source="R_ASSIGNED" target="TRAINER" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e6L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e6">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <!-- EDGES: User 1 to N Payment via makes -->
+                <mxCell id="e7" style="endArrow=none;" edge="1" source="USER" target="R_MAKES_UP" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e7L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e7">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e8" style="endArrow=none;" edge="1" source="R_MAKES_UP" target="PAYMENT" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e8L" value="N" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e8">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <!-- EDGES: Payment 1 to 1 Booking via has -->
+                <mxCell id="e9" style="endArrow=none;" edge="1" source="PAYMENT" target="R_HAS" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e9L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e9">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e10" style="endArrow=none;" edge="1" source="R_HAS" target="BOOKING" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e10L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e10">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <!-- EDGES: Admin 1 to N Trainer via approves -->
+                <mxCell id="e11" style="endArrow=none;" edge="1" source="ADMIN" target="R_APPROVES" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e11L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e11">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e12" style="endArrow=none;" edge="1" source="R_APPROVES" target="TRAINER" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e12L" value="N" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e12">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <!-- EDGES: Payment N to 1 Trainer via manages -->
+                <mxCell id="e13" style="endArrow=none;" edge="1" source="PAYMENT" target="R_MANAGES" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e13L" value="N" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e13">
+                    <mxGeometry x="-0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e14" style="endArrow=none;" edge="1" source="R_MANAGES" target="TRAINER" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e14L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="e14">
+                    <mxGeometry x="0.8" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <!-- USER ATTRIBUTES -->
+                <mxCell id="AU1" value="&lt;u&gt;user id&lt;/u&gt;" style="ellipse;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="10" y="310" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU2" value="name" style="ellipse;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="155" y="265" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU3" value="email" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="30" y="255" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU4" value="city" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="185" y="335" width="80" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU5" value="password" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="10" y="480" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU6" value="contact no." style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="160" y="490" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU1" style="endArrow=none;" edge="1" source="USER" target="AU1" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU2" style="endArrow=none;" edge="1" source="USER" target="AU2" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU3" style="endArrow=none;" edge="1" source="USER" target="AU3" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU4" style="endArrow=none;" edge="1" source="USER" target="AU4" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU5" style="endArrow=none;" edge="1" source="USER" target="AU5" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU6" style="endArrow=none;" edge="1" source="USER" target="AU6" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <!-- BOOKING ATTRIBUTES -->
+                <mxCell id="AB1" value="&lt;u&gt;booki id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="650" y="20" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AB2" value="preferred time" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="790" y="15" width="130" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AB3" value="booking date" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="940" y="40" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AB4" value="session duration" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="1000" y="120" width="145" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB1" style="endArrow=none;" edge="1" source="BOOKING" target="AB1" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB2" style="endArrow=none;" edge="1" source="BOOKING" target="AB2" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB3" style="endArrow=none;" edge="1" source="BOOKING" target="AB3" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB4" style="endArrow=none;" edge="1" source="BOOKING" target="AB4" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <!-- ADMIN ATTRIBUTES -->
+                <mxCell id="AA1" value="&lt;u&gt;admin id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="1240" y="265" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AA2" value="email id" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="1150" y="430" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AA3" value="password" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="1450" y="340" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAA1" style="endArrow=none;" edge="1" source="ADMIN" target="AA1" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAA2" style="endArrow=none;" edge="1" source="ADMIN" target="AA2" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAA3" style="endArrow=none;" edge="1" source="ADMIN" target="AA3" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <!-- TRAINER ATTRIBUTES -->
+                <mxCell id="AT1" value="&lt;u&gt;trainer id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="630" y="770" width="130" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT2" value="fees" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="560" y="560" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT3" value="certificate" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="450" y="600" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT4" value="experience" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="680" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT5" value="city" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="530" y="760" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT6" value="password" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="770" y="770" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT7" value="email id" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="890" y="580" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT8" value="name" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="920" y="660" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT9" value="contact no." style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="920" y="745" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AT10" value="approved or reject" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="840" y="810" width="155" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT1" style="endArrow=none;" edge="1" source="TRAINER" target="AT1" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT2" style="endArrow=none;" edge="1" source="TRAINER" target="AT2" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT3" style="endArrow=none;" edge="1" source="TRAINER" target="AT3" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT4" style="endArrow=none;" edge="1" source="TRAINER" target="AT4" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT5" style="endArrow=none;" edge="1" source="TRAINER" target="AT5" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT6" style="endArrow=none;" edge="1" source="TRAINER" target="AT6" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT7" style="endArrow=none;" edge="1" source="TRAINER" target="AT7" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT8" style="endArrow=none;" edge="1" source="TRAINER" target="AT8" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT9" style="endArrow=none;" edge="1" source="TRAINER" target="AT9" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT10" style="endArrow=none;" edge="1" source="TRAINER" target="AT10" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <!-- PAYMENT ATTRIBUTES -->
+                <mxCell id="AP1" value="&lt;u&gt;payment id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="10" y="700" width="125" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP2" value="&lt;u&gt;#user id&lt;/u&gt;" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="50" y="760" width="115" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP3" value="amount" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="10" y="570" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP4" value="payment date" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="305" y="610" width="130" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AP5" value="payment status" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="305" y="695" width="135" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP1" style="endArrow=none;" edge="1" source="PAYMENT" target="AP1" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP2" style="endArrow=none;" edge="1" source="PAYMENT" target="AP2" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP3" style="endArrow=none;" edge="1" source="PAYMENT" target="AP3" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP4" style="endArrow=none;" edge="1" source="PAYMENT" target="AP4" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAP5" style="endArrow=none;" edge="1" source="PAYMENT" target="AP5" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <!-- NEW: MESSAGE Entity (Chat feature) -->
+    <mxCell id="MESSAGE" value="Message" style="rounded=0;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontStyle=1;fontSize=18;" vertex="1" parent="1"><mxGeometry x="1480" y="450" width="180" height="80" as="geometry"/></mxCell>
+
+    <!-- NEW: contains relationship (Booking -> Message) -->
+    <mxCell id="R_CONTAINS" value="contains" style="rhombus;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=13;" vertex="1" parent="1"><mxGeometry x="1290" y="230" width="160" height="80" as="geometry"/></mxCell>
+
+    <!-- Booking 1 to N Message via contains -->
+    <mxCell id="ec1"  style="endArrow=none;" edge="1" source="BOOKING"    target="R_CONTAINS" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ec1L" value="1" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="ec1"><mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+    <mxCell id="ec2"  style="endArrow=none;" edge="1" source="R_CONTAINS" target="MESSAGE"   parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="ec2L" value="N" style="text;fontSize=12;fontStyle=1;" vertex="1" connectable="0" parent="ec2"><mxGeometry x="0.8"  relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+    <!-- NEW: Message Attributes -->
+    <mxCell id="AM1" value="&lt;u&gt;id&lt;/u&gt;"     style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1460" y="340" width="80"  height="40" as="geometry"/></mxCell>
+    <mxCell id="AM2" value="booking_id (FK)"         style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1620" y="350" width="140" height="40" as="geometry"/></mxCell>
+    <mxCell id="AM3" value="sender_id"               style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1640" y="450" width="110" height="40" as="geometry"/></mxCell>
+    <mxCell id="AM4" value="sender_type"             style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1640" y="530" width="120" height="40" as="geometry"/></mxCell>
+    <mxCell id="AM5" value="content"                 style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1530" y="590" width="100" height="40" as="geometry"/></mxCell>
+    <mxCell id="AM6" value="created_at"              style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1380" y="560" width="110" height="40" as="geometry"/></mxCell>
+    <mxCell id="LAM1" style="endArrow=none;" edge="1" source="MESSAGE" target="AM1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="LAM2" style="endArrow=none;" edge="1" source="MESSAGE" target="AM2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="LAM3" style="endArrow=none;" edge="1" source="MESSAGE" target="AM3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="LAM4" style="endArrow=none;" edge="1" source="MESSAGE" target="AM4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="LAM5" style="endArrow=none;" edge="1" source="MESSAGE" target="AM5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="LAM6" style="endArrow=none;" edge="1" source="MESSAGE" target="AM6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                </mxCell>
+                <!-- NEW: OTP attributes on User (Forgot Password feature) -->
+                <mxCell id="AU7" value="otp_code" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="350" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU8" value="otp_expires" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="415" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="AU9" value="profile_image" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="280" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU7" style="endArrow=none;" edge="1" source="USER" target="AU7" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU8" style="endArrow=none;" edge="1" source="USER" target="AU8" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAU9" style="endArrow=none;" edge="1" source="USER" target="AU9" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <!-- NEW: OTP attributes on Trainer (Forgot Password feature) -->
+    <mxCell id="AT11" value="otp_code"    style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1050" y="700" width="110" height="40" as="geometry"/></mxCell>
+    <mxCell id="AT12" value="otp_expires" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1050" y="760" width="120" height="40" as="geometry"/></mxCell>
+                </mxCell>
+                <mxCell id="LAT11" style="endArrow=none;" edge="1" source="TRAINER" target="AT11" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAT12" style="endArrow=none;" edge="1" source="TRAINER" target="AT12" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <!-- NEW: trainer_suggestion on Booking -->
+                <mxCell id="AB5" value="trainer_suggestion" style="ellipse;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+                    <mxGeometry x="830" y="200" width="155" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="LAB5" style="endArrow=none;" edge="1" source="BOOKING" target="AB5" parent="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

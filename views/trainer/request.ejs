@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitConnect - Application to Become a Trainer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css?v=6">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <%- include('partials/theme-logic') %>
+    <style>
+        body {
+            background-color: #f8fafc;
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animated Abstract Background */
+        .auth-container { 
+            min-height: calc(100vh - 74px); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 20px; 
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient glowing orbs */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.5;
+            animation: floatShape 20s ease-in-out infinite alternate;
+        }
+        .orb-1 { background: #38bdf8; width: 500px; height: 500px; top: -100px; left: -100px; }
+        .orb-2 { background: #34d399; width: 300px; height: 300px; bottom: 100px; right: 10%; animation-delay: -5s; }
+
+        @keyframes floatShape {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        /* Falling Equipment Container */
+        .falling-container {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            height: calc(100% + 200px);
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .gym-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.25);
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Glass Card */
+        .auth-card { 
+            max-width: 950px; /* Slightly wider to accommodate form grid */
+            width: 100%; 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            overflow: hidden; 
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .auth-card.visible { opacity: 1; transform: translateY(0); }
+
+        /* Left Side Graphic */
+        .auth-graphic-side {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(129, 140, 248, 0.1));
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            flex-direction: column;
+        }
+
+        .floating-graphic {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            animation: hoverFloat 6s ease-in-out infinite;
+            transform: scale(0.85);
+        }
+
+        @keyframes hoverFloat {
+            0%, 100% { transform: translateY(0px) scale(0.85); }
+            50% { transform: translateY(-15px) scale(0.85); }
+        }
+
+        .graphic-circle {
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid white;
+        }
+
+        /* Specialized icons for Apply block */
+        .circle-main { width: 160px; height: 160px; top: 45px; left: 45px; z-index: 3; font-size: 4rem; color: #38bdf8; }
+        .circle-2 { width: 80px; height: 80px; top: 0; left: 20px; z-index: 2; font-size: 2rem; color: #10b981; animation: orbit1 8s linear infinite; }
+        .circle-3 { width: 60px; height: 60px; bottom: 20px; right: 20px; z-index: 4; font-size: 1.5rem; color: #f59e0b; animation: orbit2 6s linear infinite; }
+
+        @keyframes orbit1 {
+            0% { transform: rotate(0deg) translateX(40px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); }
+        }
+        @keyframes orbit2 {
+            0% { transform: rotate(0deg) translateX(-30px) rotate(0deg); }
+            100% { transform: rotate(-360deg) translateX(-30px) rotate(360deg); }
+        }
+
+        .auth-graphic-text { margin-top: 2rem; text-align: center; }
+        .auth-graphic-text h3 { font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
+
+        /* Form side */
+        .auth-form-side {
+            background: rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* Scrollable Form Container */
+        .form-scroller {
+            height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 15px;
+            margin-right: -15px;
+        }
+        
+        .form-scroller::-webkit-scrollbar { width: 6px; }
+        .form-scroller::-webkit-scrollbar-track { background: transparent; }
+        .form-scroller::-webkit-scrollbar-thumb { background-color: rgba(56, 189, 248, 0.3); border-radius: 10px; }
+        .form-scroller::-webkit-scrollbar-thumb:hover { background-color: rgba(56, 189, 248, 0.6); }
+
+        .form-floating-custom { margin-bottom: 1rem; position: relative; }
+        .form-control-modern {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            color: #0f172a; border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            height: calc(3.5rem + 2px); padding: 1rem 1.25rem;
+        }
+
+        /* File input overrides */
+        input[type="file"].form-control-modern {
+            padding: 0.8rem 1.25rem;
+            line-height: 1.5;
+        }
+
+        .form-control-modern:focus {
+            border-color: #38bdf8; background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15) !important;
+        }
+
+        .btn-interactive {
+            background: #38bdf8; color: white; border: none; border-radius: 12px;
+            font-weight: 700; padding: 14px; transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-interactive:hover {
+            background: #0284c7; transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(56, 189, 248, 0.4); color: white;
+        }
+
+        .form-label-top {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .navbar-custom { border-bottom: 1px solid rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-dumbbell me-2" style="color:#3498db;"></i><span style="color:#3498db;font-weight:800;">FitConnect</span></a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <button onclick="toggleTheme()" class="btn btn-sm d-flex align-items-center gap-2 me-3 theme-toggle-btn" 
+                            style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: inherit; padding: 6px 12px; border-radius: 20px;">
+                        <i class="fas fa-paint-brush"></i>
+                    </button>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="/search">Find a Trainer</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="/trainer/login">Trainer Portal</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+
+        <!-- Falling Equipment -->
+        <div class="falling-container" id="fallingContainer"></div>
+
+        <div class="auth-card row g-0" id="mainCard">
+            <!-- Left Animated Graphic Section -->
+            <div class="col-md-5 auth-graphic-side d-none d-md-flex p-4">
+                <div class="floating-graphic">
+                    <div class="graphic-circle circle-main"><i class="fas fa-id-badge"></i></div>
+                    <div class="graphic-circle circle-2"><i class="fas fa-certificate"></i></div>
+                    <div class="graphic-circle circle-3"><i class="fas fa-handshake"></i></div>
+                </div>
+                
+                <div class="auth-graphic-text">
+                    <h3 class="fs-4">Join The Elite</h3>
+                    <p class="text-slate-500 small px-3 mt-2">Bring your expertise to a growing community. Inspire, guide, and transform lives.</p>
+                </div>
+            </div>
+
+            <!-- Right Form Section -->
+            <div class="col-md-7 p-4 p-lg-5 auth-form-side">
+                <div class="text-center mb-4 pb-1">
+                    <h4 class="fw-bold mb-1" style="color:#0f172a;">Trainer Application</h4>
+                    <p class="text-slate-500 small m-0">Tell us about your fitness expertise</p>
+                </div>
+
+                <div class="form-scroller">
+                    <form action="/trainer/request" method="POST" enctype="multipart/form-data" onsubmit="return showLoading(this)">
+                        
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="form-floating form-floating-custom">
+                                    <input type="text" name="name" class="form-control form-control-modern" id="reqName" placeholder="Full Name" required>
+                                    <label for="reqName" class="text-slate-400">Full Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating form-floating-custom">
+                                    <input type="email" name="email" class="form-control form-control-modern" id="reqEmail" placeholder="Email Address" required>
+                                    <label for="reqEmail" class="text-slate-400">Email Address</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="form-floating form-floating-custom">
+                                    <input type="text" name="contact_number" class="form-control form-control-modern" id="reqPhone" placeholder="Phone Number" required>
+                                    <label for="reqPhone" class="text-slate-400">Phone</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating form-floating-custom">
+                                    <input type="text" name="city" class="form-control form-control-modern" id="reqCity" placeholder="City" required>
+                                    <label for="reqCity" class="text-slate-400">City</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label-top">Specialization</label>
+                                <select name="specialization" class="form-control form-control-modern h-auto py-2" required>
+                                    <option value="">Select Primary</option>
+                                    <option value="Weight Loss">Weight Loss</option>
+                                    <option value="Muscle Gain">Muscle Gain</option>
+                                    <option value="Yoga">Yoga</option>
+                                    <option value="CrossFit">CrossFit</option>
+                                    <option value="Nutrition">Nutrition</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-top">Exp. (Yrs)</label>
+                                <input type="number" name="experience" class="form-control form-control-modern h-auto py-2" placeholder="e.g. 3" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-top">Rate (₹)</label>
+                                <input type="number" name="booking_amount" class="form-control form-control-modern h-auto py-2" placeholder="₹500" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label-top"><i class="fas fa-camera me-1"></i> Profile Photo</label>
+                            <input type="file" name="profile_image" class="form-control form-control-modern" accept="image/*">
+                            <small class="text-slate-400" style="font-size:0.75rem;">A professional photo increases bookings significantly.</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label-top"><i class="fas fa-file-pdf me-1"></i> Certification Documents</label>
+                            <input type="file" name="certifications" class="form-control form-control-modern" accept=".pdf,.jpg,.jpeg,.png" multiple>
+                            <small class="text-slate-400" style="font-size:0.75rem;">Upload certifications (PDF, JPG, PNG). Multiple allowed.</small>
+                        </div>
+
+                        <div class="form-floating form-floating-custom mb-4">
+                            <input type="password" name="password" class="form-control form-control-modern" id="reqPass" placeholder="Set Dashboard Password" required>
+                            <label for="reqPass" class="text-slate-400">Set Portal Password</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-interactive w-100">
+                            <span class="btn-text">Submit Application</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="text-center mt-3 pt-3 position-relative">
+                    <hr class="position-absolute w-100 top-0 m-0" style="opacity: 0.1;">
+                    <a href="/trainer/login" class="text-decoration-none small text-slate-500 fw-medium">Already approved? Login here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fade in card
+            setTimeout(() => {
+                document.getElementById('mainCard').classList.add('visible');
+            }, 100);
+
+            // Generate falling gym equipment
+            const container = document.getElementById('fallingContainer');
+            const icons = ['fa-dumbbell', 'fa-suitcase', 'fa-clipboard-list', 'fa-stopwatch', 'fa-bullhorn', 'fa-file-signature'];
+            const numEquipments = 15;
+
+            for(let i=0; i < numEquipments; i++) {
+                const icon = document.createElement('i');
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                icon.className = `gym-icon fas ${randomIcon}`;
+                
+                const size = Math.random() * 2 + 1.5; 
+                const leftPos = Math.random() * 100;
+                const duration = Math.random() * 15 + 15; 
+                const delay = Math.random() * 20; 
+                
+                icon.style.fontSize = `${size}rem`;
+                icon.style.left = `${leftPos}%`;
+                icon.style.animationDuration = `${duration}s`;
+                icon.style.animationDelay = `-${delay}s`; 
+                
+                container.appendChild(icon);
+            }
+        });
+
+        function showLoading(form) {
+            const btn = form.querySelector('button[type="submit"]');
+            const btnText = btn.querySelector('.btn-text');
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+            btnText.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+            return true;
+        }
+    </script>
+</body>
+</html>

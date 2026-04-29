@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Admin Console</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <%- include('../partials/theme-logic') %>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        *{ font-family: 'Montserrat', sans-serif; }
+
+        body { 
+            background-color: #2a0404; /* Dark red abstract base */
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Aesthetic Red Aurora Background */
+        .bg-aurora {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: #2a0404;
+            overflow: hidden;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            filter: blur(100px);
+            opacity: 0.6;
+            animation: float-blob 20s infinite alternate ease-in-out;
+        }
+
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vh; background: #dc2626; animation-delay: 0s; }
+        .blob-2 { top: 40%; right: -20%; width: 60vw; height: 60vh; background: #ef4444; animation-delay: -5s; }
+        .blob-3 { bottom: -20%; left: 20%; width: 40vw; height: 50vh; background: #b91c1c; animation-delay: -10s; }
+
+        @keyframes float-blob {
+            0% { transform: scale(1) translate(0, 0) rotate(0deg); }
+            50% { transform: scale(1.1) translate(5%, 5%) rotate(5deg); }
+            100% { transform: scale(0.9) translate(-5%, -5%) rotate(-5deg); }
+        }
+
+        /* Animated Security Icons Floating */
+        .falling-container {
+            position: fixed;
+            top: -100px; left: 0; width: 100%; height: calc(100% + 200px);
+            overflow: hidden; z-index: -1; pointer-events: none;
+        }
+
+        .sec-icon {
+            position: absolute; color: rgba(255, 255, 255, 0.05); animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Glassmorphism Configuration */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+            color: #fff !important;
+        }
+
+        /* Override existing styles for dark mode compatibility */
+        .sidebar { 
+            min-height: 100vh; 
+            border-right: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.4) !important;
+            backdrop-filter: blur(20px);
+        }
+        .sidebar .nav-link { color: rgba(255,255,255,0.7); padding: 15px 20px; font-weight: 500; transition: 0.3s; border-left: 4px solid transparent; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(220, 38, 38, 0.15); color: #fff; border-left-color: #dc2626; } /* Crimson red hover */
+        
+        .topbar { 
+            background: rgba(0, 0, 0, 0.2) !important; 
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .navbar-brand, .fitconnect-brand { color: #fff !important; -webkit-text-fill-color: #fff !important; background: none !important; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        
+        /* Table overrides */
+        .table { color: #fff; }
+        .table-hover tbody tr:hover { background-color: rgba(255,255,255,0.05); color: #fff; }
+        .table > :not(caption) > * > * { border-bottom-color: rgba(255,255,255,0.1); background-color: transparent !important; color: #fff; }
+        .table thead th { border-bottom: 2px solid rgba(255,255,255,0.2) !important; color: rgba(255,255,255,0.8); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;}
+        
+        /* Typography */
+        .text-dark, .text-gray-800 { color: #fff !important; }
+        .text-muted { color: rgba(255,255,255,0.6) !important; }
+        
+        .btn-modern { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); border: none; color: white; transition: 0.3s; }
+        .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(220, 38, 38, 0.4); color: white; }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-aurora">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+    <div class="falling-container" id="fallingContainer"></div>
+
+    <div class="container-fluid p-0">
+        <div class="row g-0 flex-nowrap">
+            <!-- Sidebar -->
+            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 sidebar d-none d-md-block">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white w-100">
+                    <a href="/" class="d-flex align-items-center pb-3 mb-4 w-100 text-white text-decoration-none border-bottom" style="border-color: rgba(255,255,255,0.1) !important;">
+                        <i class="fas fa-shield-alt fa-2x me-2 fitconnect-brand"></i>
+                        <span class="fs-5 fw-bold d-none d-sm-inline fitconnect-brand">Admin Console</span>
+                    </a>
+                    
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu">
+                        <div class="mb-2 px-3 text-uppercase small fw-bold mt-2" style="opacity: 0.5; color: #fff;">Dashboard</div>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/admin/dashboard" class="nav-link w-100">
+                                <i class="fs-6 fas fa-chart-pie me-2"></i> <span class="d-none d-sm-inline">Overview</span>
+                            </a>
+                        </li>
+                        <div class="mb-2 px-3 text-uppercase small fw-bold mt-4" style="opacity: 0.5; color: #fff;">Management</div>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/admin/trainers" class="nav-link w-100 d-flex justify-content-between align-items-center">
+                                <div><i class="fs-6 fas fa-user-tie me-2"></i> <span class="d-none d-sm-inline">Trainers</span></div>
+                                <% if(typeof stats !== 'undefined' && stats.pendingTrainers > 0) { %>
+                                    <span class="badge bg-danger shadow-sm"><%= stats.pendingTrainers %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/admin/users" class="nav-link active w-100">
+                                <i class="fs-6 fas fa-users me-2"></i> <span class="d-none d-sm-inline">Users</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100 mb-1">
+                            <a href="/admin/bookings" class="nav-link w-100">
+                                <i class="fs-6 fas fa-calendar-alt me-2"></i> <span class="d-none d-sm-inline">Bookings</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <hr class="w-100 mt-5 mb-3" style="border-color: rgba(255,255,255,0.1);">
+                    <div class="pb-4 w-100">
+                        <a href="/admin/logout" class="btn btn-outline-light w-100 border-opacity-25 py-2 fw-medium"><i class="fas fa-power-off me-2 text-danger"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col py-0 px-0" style="height: 100vh; overflow-y: auto; overflow-x: hidden;">
+                <nav class="navbar topbar px-4 py-3 sticky-top">
+                    <h4 class="mb-0 fw-bold text-white d-none d-md-block" style="letter-spacing: -0.5px;">Registered Users</h4>
+                    <span class="d-md-none fw-bold fs-4 text-white">Users</span>
+                    <div class="ms-auto d-flex align-items-center">
+                        <button onclick="toggleTheme()" class="btn btn-sm d-flex align-items-center gap-2 me-3 theme-toggle-btn" 
+                                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: inherit; padding: 6px 12px; border-radius: 20px;">
+                            <i class="fas fa-paint-brush"></i>
+                        </button>
+                        <div class="px-4 py-2 border rounded-pill shadow-sm glass-panel text-white border-white border-opacity-25" style="backdrop-filter: blur(5px);">
+                            <i class="fas fa-user-shield text-danger me-2"></i> <span class="fw-bold fs-6">Super Admin</span>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="p-4 p-md-5">
+                    <div class="card glass-panel shadow-sm border-0 rounded-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+                                <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
+                                    <i class="fas fa-users text-primary fs-4"></i>
+                                </div>
+                                <h4 class="fw-bold mb-0 text-white">Client Accounts Overview</h4>
+                            </div>
+                            
+                            <% if(typeof users !== 'undefined' && users && users.length > 0) { %>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle border-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-top-0 border-bottom border-secondary opacity-75">Client Name</th>
+                                                <th class="border-top-0 border-bottom border-secondary opacity-75">Email Address</th>
+                                                <th class="border-top-0 border-bottom border-secondary opacity-75">Contact Phone</th>
+                                                <th class="border-top-0 border-bottom border-secondary opacity-75">City Location</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% users.forEach(u => { %>
+                                                <tr>
+                                                    <td class="fw-bold text-white py-3">
+                                                        <i class="fas fa-user-circle text-primary me-2 fs-4 align-middle opacity-75"></i> <%= u.name %>
+                                                    </td>
+                                                    <td class="py-3">
+                                                        <a href="mailto: <%= u.email %>" class="text-white text-decoration-none hover-opacity-75"><i class="fas fa-envelope-open-text me-2 opacity-50"></i><%= u.email %></a>
+                                                    </td>
+                                                    <td class="py-3 opacity-75 text-white"><%= u.phone || '--' %></td>
+                                                    <td class="py-3">
+                                                        <span class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-25 px-3 py-2 shadow-sm rounded-pill"><i class="fas fa-map-marker-alt text-danger me-1"></i><%= u.city || 'Not provided' %></span>
+                                                    </td>
+                                                </tr>
+                                            <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <% } else { %>
+                                <div class="text-center py-5 my-4">
+                                    <div class="position-relative d-inline-block mx-auto mb-4">
+                                        <div class="bg-white bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto position-relative border border-white border-opacity-10" style="width: 100px; height: 100px;">
+                                            <i class="fas fa-users-slash fa-3x" style="color: rgba(255,255,255,0.4);"></i>
+                                        </div>
+                                    </div>
+                                    <h4 class="text-white fw-bold mb-2">No Users Found!</h4>
+                                    <p style="color: #94a3b8;" class="mb-4">Users will appear here once they register on the platform.</p>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Generate secure glowing floating animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const fallingContainer = document.getElementById('fallingContainer');
+            if(fallingContainer) {
+                const icons = ['fa-shield-halved', 'fa-lock', 'fa-key', 'fa-server', 'fa-user-tie', 'fa-user-shield'];
+                const numEquipments = 20; 
+
+                for(let i=0; i < numEquipments; i++) {
+                    const icon = document.createElement('i');
+                    const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                    icon.className = `sec-icon fas ${randomIcon}`;
+                    
+                    const size = Math.random() * 3 + 1; 
+                    const leftPos = Math.random() * 100;
+                    const duration = Math.random() * 20 + 20; 
+                    const delay = Math.random() * -25; 
+                    
+                    icon.style.fontSize = `${size}rem`;
+                    icon.style.left = `${leftPos}%`;
+                    icon.style.animationDuration = `${duration}s`;
+                    icon.style.animationDelay = `${delay}s`; 
+                    
+                    fallingContainer.appendChild(icon);
+                }
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

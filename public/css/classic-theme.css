@@ -1,0 +1,292 @@
+/* Classic Professional Theme for FitConnect */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+.theme-classic {
+    --primary: #0F172A; /* Deep Navy */
+    --primary-light: #1E293B;
+    --accent: #C2410C; /* Rust Orange / Gold-ish */
+    --accent-hover: #9A3412;
+    --bg-main: #FFFFFF;
+    --bg-subtle: #F8F9FA;
+    --text-main: #1E293B;
+    --text-muted: #64748B;
+    --border-color: #E2E8F0;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.theme-classic body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Smooth Transitions Global */
+.theme-classic a, 
+.theme-classic button, 
+.theme-classic .card, 
+.theme-classic .glass-panel,
+.theme-classic .glass-card,
+.theme-classic .nav-link,
+.theme-classic .sidebar a,
+.theme-classic .sidebar .nav-link,
+.theme-classic input,
+.theme-classic select,
+.theme-classic .stat-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.theme-classic h1, 
+.theme-classic h2, 
+.theme-classic h3, 
+.theme-classic .navbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+/* Navbar Classic */
+.theme-classic nav.navbar {
+    background: white !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    backdrop-filter: none;
+}
+
+.theme-classic .navbar-brand, 
+.theme-classic .fitconnect-brand {
+    color: var(--primary) !important;
+    -webkit-text-fill-color: var(--primary) !important;
+    font-size: 1.75rem;
+}
+
+.theme-classic .nav-link {
+    color: var(--text-main) !important;
+    font-weight: 500 !important;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem !important;
+}
+
+.theme-classic .nav-link:hover {
+    color: var(--accent) !important;
+}
+
+/* Hero Section Classic */
+.theme-classic .mesh-bg {
+    background: #F8F9FA !important;
+    background-image: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.02) 0%, transparent 100%) !important;
+}
+
+.theme-classic .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(to right, var(--primary), var(--accent)) !important;
+}
+
+.theme-classic .glass-card,
+.theme-classic .glass-panel,
+.theme-classic .card.glass-panel {
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-main) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+.theme-classic .glass-card:hover,
+.theme-classic .glass-panel:hover {
+    box-shadow: var(--card-shadow-hover) !important;
+    transform: translateY(-5px) !important;
+    border-color: var(--accent) !important;
+}
+
+.theme-classic .glass-card h4, 
+.theme-classic .glass-card h2,
+.theme-classic .glass-panel h4,
+.theme-classic .glass-panel h3,
+.theme-classic .glass-panel h2,
+.theme-classic .glass-panel h1 {
+    color: var(--primary) !important;
+}
+
+.theme-classic .glass-card p,
+.theme-classic .glass-panel p,
+.theme-classic .glass-panel span:not(.badge) {
+    color: var(--text-muted) !important;
+}
+
+.theme-classic .glass-panel-content {
+    background: var(--bg-subtle) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+/* Buttons Classic */
+.theme-classic .btn-modern, 
+.theme-classic .login-btn-aurora {
+    background: var(--primary) !important;
+    color: white !important;
+    border: 1px solid var(--primary) !important;
+    border-radius: 4px !important; /* Sharper corners for classic feel */
+    font-weight: 600 !important;
+    padding: 10px 24px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
+}
+
+.theme-classic .btn-modern:hover, 
+.theme-classic .login-btn-aurora:hover {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Aurora Dropdown override for Classic */
+.theme-classic .aurora-dropdown {
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.theme-classic .aurora-dropdown-item {
+    color: var(--text-main) !important;
+}
+
+.theme-classic .aurora-dropdown-item:hover {
+    background: var(--bg-subtle) !important;
+    color: var(--accent) !important;
+}
+
+.theme-classic .aurora-dropdown-label {
+    color: var(--text-muted) !important;
+}
+
+/* Login Page Overrides (Classic) */
+.theme-classic .bg-aurora {
+    background: #F8F9FA !important;
+}
+.theme-classic .aurora-blob {
+    display: none !important;
+}
+.theme-classic .nav-home {
+    background: white !important;
+    color: var(--primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+.theme-classic .nav-home:hover {
+    border-color: var(--accent) !important;
+}
+.theme-classic .container {
+    border-radius: 8px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !important;
+    border: 1px solid var(--border-color) !important;
+}
+.theme-classic .toggle {
+    background: var(--primary) !important;
+}
+.theme-classic .container button {
+    background-color: var(--primary) !important;
+    border-radius: 4px !important;
+}
+.theme-classic .container button:hover {
+    background-color: var(--accent) !important;
+}
+.theme-classic .container input, 
+.theme-classic .container select {
+    background-color: #F1F5F9 !important;
+    border: 1px solid var(--border-color) !important;
+}
+.theme-classic .container input:focus, 
+.theme-classic .container select:focus {
+    border-color: var(--accent) !important;
+    background-color: white !important;
+}
+
+/* Dashboard Overrides (Classic) */
+.theme-classic .bg-\[\#020617\], 
+.theme-classic .bg-slate-950,
+.theme-classic .bg-\[\#0b1a30\],
+.theme-classic .bg-\[\#2a0404\],
+.theme-classic .bg-\[\#022c22\],
+.theme-classic [style*="background-color: #0b1a30"],
+.theme-classic [style*="background-color: #2a0404"],
+.theme-classic [style*="background-color: #022c22"],
+.theme-classic [style*="background: #022c22"],
+.theme-classic [style*="background: #2a0404"],
+.theme-classic body[style*="background-color"] {
+    background-color: #FFFFFF !important;
+    background-image: none !important;
+}
+.theme-classic .sidebar {
+    background-color: var(--bg-subtle) !important;
+    border-right: 1px solid var(--border-color) !important;
+}
+.theme-classic .sidebar [style*="color: #fff"],
+.theme-classic .sidebar [style*="color: white"],
+.theme-classic .sidebar [style*="color:#fff"],
+.theme-classic .sidebar [style*="color:rgba(255,255,255"] {
+    color: var(--text-main) !important;
+    opacity: 1 !important;
+}
+.theme-classic .sidebar a,
+.theme-classic .sidebar .nav-link {
+    color: var(--text-main) !important;
+}
+.theme-classic .sidebar a:hover,
+.theme-classic .sidebar a.active,
+.theme-classic .sidebar .nav-link:hover,
+.theme-classic .sidebar .nav-link.active {
+    background-color: rgba(15, 23, 42, 0.05) !important;
+    color: var(--accent) !important;
+    border-left-color: var(--accent) !important;
+}
+.theme-classic .topbar {
+    background-color: white !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+.theme-classic .stat-card {
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+.theme-classic .text-white,
+.theme-classic .h1,
+.theme-classic .h2,
+.theme-classic .h3,
+.theme-classic .h4 {
+    color: var(--text-main) !important;
+}
+.theme-classic .text-slate-400,
+.theme-classic .text-muted {
+    color: var(--text-muted) !important;
+}
+.theme-classic .border-slate-800,
+.theme-classic .border-white,
+.theme-classic .border-secondary {
+    border-color: var(--border-color) !important;
+}
+.theme-classic .table {
+    color: var(--text-main) !important;
+}
+.theme-classic .table thead th {
+    color: var(--primary) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+.theme-classic .table td {
+    border-bottom-color: var(--border-color) !important;
+}
+
+/* Footer Classic overrides */
+.theme-classic footer {
+    background: var(--primary) !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+.theme-classic footer .text-\[\#3ca2fa\] {
+    color: var(--accent) !important;
+}

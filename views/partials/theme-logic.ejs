@@ -1,0 +1,23 @@
+<!-- Theme Switcher Engine -->
+<script>
+    (function() {
+        const savedTheme = localStorage.getItem('fitconnect-theme') || 'classic';
+        document.documentElement.classList.remove('theme-classic', 'theme-aurora');
+        document.documentElement.classList.add('theme-' + savedTheme);
+        
+        if (savedTheme === 'classic') {
+            const link = document.createElement('link');
+            link.id = 'classic-theme-link';
+            link.rel = 'stylesheet';
+            link.href = '/css/classic-theme.css?v=' + new Date().getTime();
+            document.head.appendChild(link);
+        }
+    })();
+
+    function toggleTheme() {
+        const isClassic = document.documentElement.classList.contains('theme-classic');
+        const newTheme = isClassic ? 'aurora' : 'classic';
+        localStorage.setItem('fitconnect-theme', newTheme);
+        window.location.reload();
+    }
+</script>

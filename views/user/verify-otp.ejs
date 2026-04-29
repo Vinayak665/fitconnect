@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - FitConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        *{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background-color: #020617; display: flex; align-items: center; justify-content: center; min-height: 100vh; position: relative; overflow: hidden; color: #fff; }
+        
+        .bg-aurora { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: #020617; overflow: hidden; }
+        .aurora-blob { position: absolute; filter: blur(90px); opacity: 0.6; animation: float-blob 20s infinite alternate ease-in-out; }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vh; background: #38bdf8; animation-delay: 0s; }
+        .blob-2 { top: 40%; right: -20%; width: 60vw; height: 60vh; background: #818cf8; animation-delay: -5s; }
+        .blob-3 { bottom: -20%; left: 20%; width: 40vw; height: 50vh; background: #c084fc; animation-delay: -10s; }
+        @keyframes float-blob {
+            0% { transform: scale(1) translate(0, 0) rotate(0deg); }
+            100% { transform: scale(1.2) translate(3%, -3%) rotate(3deg); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 50px;
+            width: 450px;
+            max-width: 90%;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 { font-size: 2rem; font-weight: 700; margin-bottom: 15px; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { color: rgba(255, 255, 255, 0.6); margin-bottom: 30px; font-size: 0.95rem; line-height: 1.6; }
+        
+        .otp-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
+        .otp-input { width: 50px; height: 60px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #fff; font-size: 1.5rem; font-weight: 700; text-align: center; transition: 0.3s; }
+        .otp-input:focus { outline: none; border-color: #38bdf8; background: rgba(255, 255, 255, 0.12); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%); border: none; border-radius: 12px; color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
+
+        .resend-text { margin-top: 25px; font-size: 0.9rem; color: rgba(255, 255, 255, 0.5); }
+        .resend-link { color: #38bdf8; text-decoration: none; font-weight: 600; margin-left: 5px; cursor: pointer; }
+        .resend-link:hover { text-decoration: underline; }
+        .theme-toggle-floating {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        .theme-toggle-floating:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    <%- include('../partials/theme-logic') %>
+</head>
+<body>
+    <div class="bg-aurora">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+
+    <button onclick="toggleTheme()" class="theme-toggle-floating" title="Switch Theme">
+        <i class="fas fa-paint-brush"></i>
+    </button>
+
+    <div class="glass-card">
+        <h1>Verify Code</h1>
+        <p>We've sent a 6-digit verification code to <br><strong style="color: #fff;"><%= email %></strong></p>
+
+        <% if (typeof testOtp !== 'undefined' && testOtp) { %>
+            <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; padding: 15px; border-radius: 12px; margin: 20px 0; font-size: 0.9rem; color: #38bdf8; text-align: center;">
+                <i class="fas fa-tools me-2"></i> <strong>Testing Mode:</strong> Your OTP is <b style="font-size: 1.1rem; letter-spacing: 1px;"><%= testOtp %></b>
+            </div>
+        <% } %>
+
+        <form id="verifyForm" action="/verify-otp" method="POST">
+            <input type="hidden" name="email" value="<%= email %>">
+            <input type="hidden" name="role" value="<%= role %>">
+            <input type="hidden" name="otp" id="fullOtp">
+            
+            <div class="otp-container">
+                <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d" required>
+            </div>
+
+            <button type="submit">Verify & Proceed</button>
+        </form>
+
+        <p class="resend-text">Didn't receive code? <a class="resend-link">Resend OTP</a></p>
+    </div>
+
+    <script>
+        const inputs = document.querySelectorAll('.otp-input');
+        const form = document.getElementById('verifyForm');
+        const fullOtpInput = document.getElementById('fullOtp');
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('keyup', (e) => {
+                if (e.key >= 0 && e.key <= 9) {
+                    if (index < inputs.length - 1) inputs[index + 1].focus();
+                } else if (e.key === 'Backspace') {
+                    if (index > 0) inputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('input', () => {
+                if (input.value.length > 1) {
+                    input.value = input.value[0];
+                }
+            });
+        });
+
+        form.addEventListener('submit', (e) => {
+            let otp = '';
+            inputs.forEach(input => otp += input.value);
+            fullOtpInput.value = otp;
+        });
+    </script>
+</body>
+</html>

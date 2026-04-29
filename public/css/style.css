@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #3498db;
+  --primary-dark: #2980b9;
+  --secondary: #8e44ad;
+  --success: #27ae60;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --dark: #2c3e50;
+  --light: #ecf0f1;
+  --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  --hero-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-gradient);
+  color: var(--dark);
+  overflow-x: hidden;
+}
+
+/* Glassmorphism */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+}
+
+/* Hero Section */
+.hero-section {
+  background: var(--hero-gradient);
+  color: white;
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+.hero-title {
+  font-weight: 800;
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: fadeUp 1s ease-out;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  font-weight: 300;
+  opacity: 0.9;
+  animation: fadeUp 1s ease-out 0.2s both;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Cards */
+.trainer-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: none;
+  overflow: hidden;
+}
+
+.trainer-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.trainer-card .card-img-top {
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.trainer-card:hover .card-img-top {
+  transform: scale(1.1);
+}
+
+.trainer-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255,255,255,0.9);
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 600;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+.btn-modern {
+  background: #3498db;
+  color: white;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 25px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-modern:hover {
+  background: #2980b9;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(52, 152, 219, 0.45);
+}
+
+/* Navbar */
+.navbar-custom {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 15px 0;
+  transition: all 0.3s ease;
+  z-index: 1030;
+}
+
+/* Fix for Tailwind/Bootstrap conflict */
+@media (max-width: 991.98px) {
+  .collapse:not(.show) {
+    display: none !important;
+  }
+}
+
+.navbar-collapse.collapse {
+  visibility: visible !important;
+}
+
+.navbar-collapse.collapse.show {
+  display: block !important;
+}
+
+.dropdown-menu {
+  z-index: 1050 !important;
+}
+
+.navbar-brand,
+.fitconnect-brand {
+  font-weight: 800;
+  color: #3498db !important;
+  -webkit-text-fill-color: #3498db !important;
+  background: none !important;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+}
+
+.navbar-custom .nav-link {
+  color: var(--dark);
+  transition: color 0.3s ease;
+}
+
+.navbar-custom .nav-link:hover {
+  color: var(--primary);
+}
+
+/* Forms */
+.form-control-modern {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+}
+
+.form-control-modern:focus {
+  background: white;
+  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+  border-color: var(--primary);
+  outline: none;
+}
