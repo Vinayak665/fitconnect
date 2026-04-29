@@ -53,6 +53,20 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('view cache', process.env.NODE_ENV === 'production'); // Enable cache in production
 
+// Debug route - shows env var status (REMOVE AFTER FIXING)
+app.get('/debug', (req, res) => {
+    res.json({
+        node_env: process.env.NODE_ENV,
+        has_supabase_url: !!process.env.SUPABASE_URL,
+        has_supabase_key: !!process.env.SUPABASE_KEY,
+        has_session_secret: !!process.env.SESSION_SECRET,
+        has_email_user: !!process.env.EMAIL_USER,
+        has_email_pass: !!process.env.EMAIL_PASS,
+        node_version: process.version,
+        platform: process.platform
+    });
+});
+
 // Routes Setup
 const userRoutes = require('./routes/userRoutes');
 const trainerRoutes = require('./routes/trainerRoutes');
@@ -66,14 +80,7 @@ app.use('/chat', chatRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-    const fs = require('fs');
-    const logMessage = `\n[${new Date().toISOString()}] GLOBAL ERROR: ${err.message}\nSTACK: ${err.stack}\n`;
-    try {
-        fs.appendFileSync(path.join(__dirname, 'error_log.txt'), logMessage);
-    } catch (e) {
-        console.error('Failed to write to error_log.txt:', e);
-    }
-    
+    // Only log to console (no file writes - Vercel filesystem is read-only)
     console.error('❌ Global Error:', err.stack);
     
     // Check if the request expects JSON
@@ -87,13 +94,11 @@ app.use((err, req, res, next) => {
         });
     }
     
-    res.status(500).send('Something broke! Check error_log.txt for details.');
+    res.status(500).send('Something broke! Error: ' + err.message);
 });
 
 // Start Server (local dev only)
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT}`);
     });
 }
 
