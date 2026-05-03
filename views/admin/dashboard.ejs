@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitConnect - Master Admin Console</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style-optimized.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <%- include('../partials/theme-logic') %>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
         
         *{ font-family: 'Montserrat', sans-serif; }
+        
+        .fitconnect-brand { font-size: 1.5rem !important; font-weight: 800 !important; }
 
         body { 
             background-color: #2a0404; /* Dark red abstract base */
@@ -119,7 +121,7 @@
             <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 sidebar d-none d-md-block">
                 <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white w-100">
                     <a href="/" class="d-flex align-items-center pb-3 mb-4 w-100 text-white text-decoration-none border-bottom" style="border-color: rgba(255,255,255,0.1) !important;">
-                        <i class="fas fa-shield-alt fa-2x me-2 fitconnect-brand"></i>
+                        <i class="fas fa-shield-alt me-2 fitconnect-brand"></i>
                         <span class="fs-5 fw-bold d-none d-sm-inline fitconnect-brand">Admin Console</span>
                     </a>
                     
@@ -300,6 +302,8 @@
             }
         });
     </script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

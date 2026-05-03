@@ -11,6 +11,7 @@ const { sendEmail } = require('../utils/mailer');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 const { getCachedData, setCachedData, cache } = require('../utils/cache');
+const { uploadToSupabase } = require('../utils/supabaseStorage');
 
 // Middleware to check if user is logged in
 const isAuthenticated = (req, res, next) => {
@@ -163,8 +164,10 @@ router.post('/user/register', async (req, res) => {
 
 router.post('/user/login', async (req, res) => {
     try {
-        const user = await User.findByEmail(req.body.email);
-        if (user && await User.comparePassword(req.body.password, user.password)) {
+        const { email, password } = req.body;
+
+        const user = await User.findByEmail(email);
+        if (user && await User.comparePassword(password, user.password)) {
             req.session.userId = user.id;
             req.session.userRole = 'user';
             res.redirect('/dashboard');
@@ -178,9 +181,38 @@ router.post('/user/login', async (req, res) => {
 });
 
 router.get('/user/logout', (req, res) => {
-    req.session.destroy();
+    req.session = null;
     res.redirect('/');
 });
+
+// --- Google OAuth Routes ---
+const passport = require('passport');
+
+router.get('/auth/google', (req, res, next) => {
+    const role = req.query.role || 'user';
+    passport.authenticate('google', { 
+        scope: ['profile', 'email'],
+        state: role // Pass the role in the state parameter
+    })(req, res, next);
+});
+
+router.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/user-login' }),
+    (req, res) => {
+        const user = req.user;
+        const role = user.role;
+        
+        if (role === 'trainer') {
+            req.session.trainerId = user.id;
+            req.session.userRole = 'trainer';
+            res.redirect('/trainer/dashboard');
+        } else {
+            req.session.userId = user.id;
+            req.session.userRole = 'user';
+            res.redirect('/dashboard');
+        }
+    }
+);
 
 // ---------------- Forgot Password (OTP) Routes ----------------
 
@@ -369,15 +401,24 @@ router.get('/edit-profile', isAuthenticated, async (req, res) => {
 router.post('/edit-profile', isAuthenticated, upload.single('profile_image'), async (req, res) => {
     try {
         const userData = { ...req.body };
-        // Note: File uploads are stored in memory on Vercel (no persistent disk)
-        // Profile image saved as base64 or skipped if no Supabase Storage bucket configured
+        
         if (req.file) {
-            // Store filename as placeholder - in production use Supabase Storage
-            userData.profile_image = 'user-' + Date.now() + path.extname(req.file.originalname);
+            const profileImageUrl = await uploadToSupabase(req.file.buffer, req.file.originalname, req.file.mimetype);
+            if (profileImageUrl) {
+                userData.profile_image = profileImageUrl;
+            } else {
+                console.error(`[ERROR] Failed to upload profile image for user ${req.session.userId}`);
+                return res.redirect('/dashboard?error=storage_policy');
+            }
         }
+        console.log('[DEBUG] User Profile Update Request');
+        console.log('[DEBUG] Session User ID:', req.session.userId);
+        console.log('[DEBUG] Received fields:', JSON.stringify(req.body, null, 2));
+        if (req.file) console.log('[DEBUG] Received file:', req.file.fieldname, req.file.size);
+
         await User.updateProfile(req.session.userId, userData);
         cache.delete(`user_dashboard_${req.session.userId}`);
-        res.redirect('/dashboard');
+        res.redirect('/dashboard?success=profile_updated');
     } catch (err) {
         console.error(err);
         res.status(500).send("Error updating profile.");

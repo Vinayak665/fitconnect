@@ -1,23 +1,24 @@
-<!-- Theme Switcher Engine -->
+<!-- Theme Engine (Locked to Aurora) -->
+<style>
+    /* Hide the theme toggle button everywhere */
+    .theme-toggle-btn, .theme-toggle-floating {
+        display: none !important;
+    }
+</style>
 <script>
     (function() {
-        const savedTheme = localStorage.getItem('fitconnect-theme') || 'classic';
-        document.documentElement.classList.remove('theme-classic', 'theme-aurora');
-        document.documentElement.classList.add('theme-' + savedTheme);
+        // Enforce Aurora theme globally
+        document.documentElement.classList.remove('theme-classic');
+        document.documentElement.classList.add('theme-aurora');
+        localStorage.setItem('fitconnect-theme', 'aurora');
         
-        if (savedTheme === 'classic') {
-            const link = document.createElement('link');
-            link.id = 'classic-theme-link';
-            link.rel = 'stylesheet';
-            link.href = '/css/classic-theme.css?v=' + new Date().getTime();
-            document.head.appendChild(link);
-        }
+        // Remove classic theme stylesheet if it was somehow loaded
+        const classicLink = document.getElementById('classic-theme-link');
+        if (classicLink) classicLink.remove();
     })();
 
+    // Dummy function so existing onclick handlers don't throw errors
     function toggleTheme() {
-        const isClassic = document.documentElement.classList.contains('theme-classic');
-        const newTheme = isClassic ? 'aurora' : 'classic';
-        localStorage.setItem('fitconnect-theme', newTheme);
-        window.location.reload();
+        console.log('Theme switching is disabled. Aurora theme is enforced.');
     }
 </script>

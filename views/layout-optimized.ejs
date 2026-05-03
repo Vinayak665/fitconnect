@@ -32,7 +32,7 @@
             pointer-events: none;
         }
 
-        .navbar-brand, .fitconnect-brand { color: #38bdf8 !important; -webkit-text-fill-color: #38bdf8 !important; background: none !important; }
+        .navbar-brand, .fitconnect-brand { color: #38bdf8 !important; -webkit-text-fill-color: #38bdf8 !important; background: none !important; font-size: 1.5rem !important; font-weight: 800 !important; }
         nav.navbar { background: rgba(2, 6, 23, 0.8) !important; backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-link { color: rgba(255,255,255,0.8) !important; }
         .nav-link:hover, .nav-link.active { color: #38bdf8 !important; }
@@ -122,6 +122,7 @@
             color: #fff !important;
         }
         .login-btn-aurora::after { display: none !important; }
+
     </style>
 
     <!-- Meta tags for performance -->
@@ -143,19 +144,14 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="/"><i class="fas fa-dumbbell me-2"></i>FitConnect</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars text-white"></i>
+            <button class="navbar-toggler border-0 text-white p-2" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+                    style="background: rgba(255,255,255,0.05); border-radius: 12px;">
+                <i class="fas fa-bars"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <!-- Theme Switcher -->
-                    <li class="nav-item me-3">
-                        <button onclick="toggleTheme()" class="btn btn-sm d-flex align-items-center gap-2 theme-toggle-btn" 
-                                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: inherit; padding: 6px 12px; border-radius: 20px;">
-                            <i class="fas fa-magic"></i>
-                            <span class="d-none d-md-inline" id="theme-status-text">Switch Theme</span>
-                        </button>
-                    </li>
+
                     <li class="nav-item"><a class="nav-link fw-semibold" href="/search">Find a Trainer</a></li>
                     <li class="nav-item"><a class="nav-link fw-semibold" href="/trainer/login?mode=signup">Become a Trainer</a></li>
 
@@ -239,42 +235,92 @@
         <%- body %>
     </main>
 
-    <!-- React + Tailwind + Motion Integration -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Footer -->
+    <footer class="relative bg-[#020617] border-t border-white/5 w-full overflow-hidden min-h-[400px] flex flex-col justify-end">
+        <div id="footer-react-root" class="absolute inset-0 z-10 pointer-events-none"></div>
+        
+        <div class="container mx-auto px-4 relative z-20 pb-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                    <a class="text-2xl font-bold mb-4 d-block text-sky-400 no-underline" href="/">
+                        <i class="fas fa-dumbbell me-2"></i>FitConnect
+                    </a>
+                    <p class="text-slate-400 mt-4">The premium platform connecting you with elite fitness professionals to achieve your goals.</p>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold mb-6">Quick Links</h5>
+                    <ul class="list-unstyled space-y-3">
+                        <li><a href="/search" class="text-slate-400 hover:text-sky-400 text-decoration-none transition-colors">Find a Trainer</a></li>
+                        <li><a href="/trainer/login?mode=signup" class="text-slate-400 hover:text-sky-400 text-decoration-none transition-colors">Become a Trainer</a></li>
+                        <li><a href="/user-login" class="text-slate-400 hover:text-sky-400 text-decoration-none transition-colors">User Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold mb-6">Support</h5>
+                    <ul class="list-unstyled space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-sky-400 text-decoration-none transition-colors">FAQs</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-sky-400 text-decoration-none transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-sky-400 text-decoration-none transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold mb-6">Contact Info</h5>
+                    <ul class="list-unstyled space-y-4">
+                        <li class="flex items-center text-slate-400"><i class="fas fa-envelope text-sky-400 me-3"></i> support@fitconnect.com</li>
+                        <li class="flex items-center text-slate-400"><i class="fas fa-phone text-sky-400 me-3"></i> +91 6362596973</li>
+                        <li class="flex items-center text-slate-400"><i class="fas fa-map-marker-alt text-sky-400 me-3"></i> Karwar, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-white/10 text-center text-slate-500 text-sm">
+                <p>&copy; <%= new Date().getFullYear() %> FitConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Optimized JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- React + Motion Integration for Footer -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/framer-motion/dist/framer-motion.js"></script>
 
-    <!-- App Container -->
-    <div id="footer-root"></div>
-
-    <!-- React Implementation -->
-    <script type="text/babel" data-presets="react,typescript">
-        const { motion } = window.Motion;
-        const cn = (...classes) => classes.filter(Boolean).join(' ');
+    <script type="text/babel">
+        const { useRef, useEffect, useState } = React;
+        const { motion } = FramerMotion;
 
         const TextHoverEffect = ({ text, duration, className }) => {
-            const svgRef = React.useRef(null);
-            const [cursor, setCursor] = React.useState({ x: 0, y: 0 });
-            const [hovered, setHovered] = React.useState(false);
-            const [maskPosition, setMaskPosition] = React.useState({ cx: "50%", cy: "50%" });
+            const svgRef = useRef(null);
+            const [cursor, setCursor] = useState({ x: 0, y: 0 });
+            const [hovered, setHovered] = useState(false);
+            const [maskPosition, setMaskPosition] = useState({ cx: "50%", cy: "50%" });
 
-            React.useEffect(() => {
+            useEffect(() => {
                 if (svgRef.current && cursor.x !== null && cursor.y !== null) {
                     const svgRect = svgRef.current.getBoundingClientRect();
                     const cxPercentage = ((cursor.x - svgRect.left) / svgRect.width) * 100;
                     const cyPercentage = ((cursor.y - svgRect.top) / svgRect.height) * 100;
-                    setMaskPosition({ cx: `${cxPercentage}%`, cy: `${cyPercentage}%` });
+                    setMaskPosition({
+                        cx: `${cxPercentage}%`,
+                        cy: `${cyPercentage}%`,
+                    });
                 }
             }, [cursor]);
 
             return (
                 <svg
-                    ref={svgRef} width="100%" height="100%" viewBox="0 0 450 100"
-                    onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+                    ref={svgRef}
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 450 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                    onMouseEnter={() => setHovered(true)}
+                    onMouseLeave={() => setHovered(false)}
                     onMouseMove={(e) => setCursor({ x: e.clientX, y: e.clientY })}
-                    className={cn("select-none uppercase cursor-pointer", className)}
+                    style={{ cursor: 'pointer', userSelect: 'none', textTransform: 'uppercase' }}
+                    className={className}
                 >
                     <defs>
                         <linearGradient id="textGradient" gradientUnits="userSpaceOnUse" cx="50%" cy="50%" r="25%">
@@ -288,9 +334,13 @@
                                 </>
                             )}
                         </linearGradient>
+
                         <motion.radialGradient
-                            id="revealMask" gradientUnits="userSpaceOnUse" r="20%"
-                            initial={{ cx: "50%", cy: "50%" }} animate={maskPosition}
+                            id="revealMask"
+                            gradientUnits="userSpaceOnUse"
+                            r="20%"
+                            initial={{ cx: "50%", cy: "50%" }}
+                            animate={maskPosition}
                             transition={{ duration: duration ?? 0, ease: "easeOut" }}
                         >
                             <stop offset="0%" stopColor="white" />
@@ -300,108 +350,90 @@
                             <rect x="0" y="0" width="100%" height="100%" fill="url(#revealMask)" />
                         </mask>
                     </defs>
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" strokeWidth="0.3"
-                        className="fill-transparent stroke-white/20 font-bold opacity-70 text-6xl"
-                        style={{ opacity: hovered ? 0.7 : 0 }}>{text}</text>
-                    <motion.text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" strokeWidth="0.3"
-                        className="fill-transparent stroke-[#3ca2fa] font-bold text-6xl"
+                    <text
+                        x="50%"
+                        y="50%"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        strokeWidth="0.3"
+                        style={{ 
+                            opacity: hovered ? 0.7 : 0, 
+                            fill: 'transparent', 
+                            stroke: '#262626', 
+                            fontFamily: 'helvetica', 
+                            fontSize: '60px', 
+                            fontWeight: 'bold' 
+                        }}
+                    >
+                        {text}
+                    </text>
+                    <motion.text
+                        x="50%"
+                        y="50%"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        strokeWidth="0.3"
+                        style={{ 
+                            fill: 'transparent', 
+                            stroke: '#3ca2fa', 
+                            fontFamily: 'helvetica', 
+                            fontSize: '60px', 
+                            fontWeight: 'bold' 
+                        }}
                         initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
                         animate={{ strokeDashoffset: 0, strokeDasharray: 1000 }}
-                        transition={{ duration: 4, ease: "easeInOut" }}>{text}</motion.text>
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" stroke="url(#textGradient)" strokeWidth="0.3"
-                        mask="url(#textMask)" className="fill-transparent font-bold text-6xl">{text}</text>
+                        transition={{ duration: 4, ease: "easeInOut" }}
+                    >
+                        {text}
+                    </motion.text>
+                    <text
+                        x="50%"
+                        y="50%"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        stroke="url(#textGradient)"
+                        strokeWidth="0.3"
+                        mask="url(#textMask)"
+                        style={{ fill: 'transparent', fontFamily: 'helvetica', fontSize: '60px', fontWeight: 'bold' }}
+                    >
+                        {text}
+                    </text>
                 </svg>
             );
         };
 
-        const isClassic = document.documentElement.classList.contains('theme-classic');
-        const themeColors = isClassic ? {
-            bg: "#F8F9FA",
-            footerBg: "bg-slate-900",
-            primary: "#C2410C", // Gold/Rust
-            textMuted: "text-slate-400",
-            border: "border-slate-800"
-        } : {
-            bg: "#171717",
-            footerBg: "bg-neutral-950",
-            primary: "#3ca2fa", // Aurora Blue
-            textMuted: "text-neutral-400",
-            border: "border-white/10"
-        };
-
-        const FooterBackgroundGradient = () => (
-            <div className="absolute inset-0 z-0" style={{ background: isClassic ? "none" : `radial-gradient(125% 125% at 50% 10%, #171717 50%, #3ca2fa33 100%)` }} />
-        );
-
-        const HoverFooter = () => {
-            const footerLinks = [
-                { title: "About Us", links: [{ label: "Company History", href: "#" }, { label: "Meet the Team", href: "#" }, { label: "Employee Handbook", href: "#" }, { label: "Careers", href: "#" }] },
-                { title: "Helpful Links", links: [{ label: "FAQs", href: "#" }, { label: "Support", href: "#" }, { label: "Live Chat", href: "#" }] },
-            ];
-            const contactInfo = [
-                { icon: <i className={`fas fa-envelope`} style={{color: themeColors.primary}}></i>, text: "support@fitconnect.com" },
-                { icon: <i className={`fas fa-phone`} style={{color: themeColors.primary}}></i>, text: "+91 6362596973" },
-                { icon: <i className={`fas fa-map-marker-alt`} style={{color: themeColors.primary}}></i>, text: "karwar, INDIA" },
-            ];
-
+        const FooterBackgroundGradient = () => {
             return (
-                <footer className={`${themeColors.footerBg} relative h-fit rounded-[2.5rem] overflow-hidden m-8 border ${themeColors.border} text-white`}>
-                    <div className="max-w-7xl mx-auto p-14 z-40 relative">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12">
-                            <div className="flex flex-col space-y-4">
-                                <div className="flex items-center space-x-2">
-                                    <span style={{color: themeColors.primary}} className="text-3xl font-extrabold">&hearts;</span>
-                                    <span className="text-3xl font-bold text-white">FitConnect</span>
-                                </div>
-                                <p className={`text-sm ${themeColors.textMuted} leading-relaxed`}>FitConnect is a modern platform to find the best trainers.</p>
-                            </div>
-                            {footerLinks.map((section) => (
-                                <div key={section.title}>
-                                    <h4 className="text-xl font-semibold mb-6 text-white">{section.title}</h4>
-                                    <ul className="space-y-3">
-                                        {section.links.map((link) => (
-                                            <li key={link.label} className="relative">
-                                                <a href={link.href} className={`${themeColors.textMuted} hover:text-[${themeColors.primary}] transition-colors`}>{link.label}</a>
-                                                {link.pulse && <span className="absolute top-1 -right-3 w-2 h-2 rounded-full bg-[#3ca2fa] animate-pulse"></span>}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ))}
-                            <div>
-                                <h4 className="text-xl font-semibold mb-6 text-white">Contact Us</h4>
-                                <ul className="space-y-4">
-                                    {contactInfo.map((item, i) => (
-                                        <li key={i} className={`flex items-center space-x-3 ${themeColors.textMuted}`}>
-                                            {item.icon}<span>{item.text}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-                        <hr className={`border-t ${themeColors.border} my-8`} />
-                        <div className="flex flex-col md:row justify-between items-center text-sm text-neutral-500">
-                            <p>&copy; {new Date().getFullYear()} FitConnect. All rights reserved.</p>
-                        </div>
-                    </div>
-                    <div className="lg:flex hidden h-[30rem] -mt-52 -mb-36">
-                        <TextHoverEffect text="FitConnect" className="z-50" />
-                    </div>
-                    <FooterBackgroundGradient />
-                </footer>
+                <div
+                    style={{
+                        position: 'absolute',
+                        inset: 0,
+                        zIndex: 0,
+                        background: "radial-gradient(125% 125% at 50% 10%, #0F0F1166 50%, #3ca2fa33 100%)",
+                    }}
+                />
             );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('footer-root'));
-        root.render(<HoverFooter />);
-    </script>
+        const FooterApp = () => {
+            return (
+                <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <FooterBackgroundGradient />
+                    <div style={{ width: '100%', maxWidth: '1200px', height: '300px', position: 'relative', zIndex: 10 }}>
+                        <TextHoverEffect text="FITCONNECT" />
+                    </div>
+                </div>
+            );
+        };
 
-    <!-- Optimized JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        const rootElement = document.getElementById('footer-react-root');
+        if (rootElement) {
+            const root = ReactDOM.createRoot(rootElement);
+            root.render(<FooterApp />);
+        }
 
-    <script>
         // Aurora dropdown toggle
-        function toggleAuroraDropdown(e) {
+        window.toggleAuroraDropdown = function(e) {
             e.stopPropagation();
             const menu = document.getElementById('auroraMenu');
             const chevron = document.getElementById('loginChevron');

@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitConnect - Search Trainers</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style-optimized.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css?v=2">
     <%- include('partials/theme-logic') %>
     <style>
-        .navbar-brand, .fitconnect-brand { color: #38bdf8 !important; -webkit-text-fill-color: #38bdf8 !important; background: none !important; }
+        .navbar-brand, .fitconnect-brand { color: #38bdf8 !important; -webkit-text-fill-color: #38bdf8 !important; background: none !important; font-size: 1.5rem !important; font-weight: 800 !important; }
         nav { background: rgba(2, 6, 23, 0.8) !important; backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-link { color: rgba(255,255,255,0.8) !important; }
         .nav-link:hover, .nav-link.active { color: #38bdf8 !important; }
@@ -474,8 +474,7 @@
 
         const HoverFooter = () => {
             const footerLinks = [
-                { title: "About Us", links: [{ label: "Company History", href: "#" }, { label: "Meet the Team", href: "#" }, { label: "Careers", href: "#" }] },
-                { title: "Helpful Links", links: [{ label: "FAQs", href: "#" }, { label: "Support", href: "#" }, { label: "Live Chat", href: "#" }] },
+                { title: "Quick Links", links: [{ label: "Find a Trainer", href: "/search" }, { label: "Become a Trainer", href: "/trainer/login?mode=signup" }, { label: "User Login", href: "/user-login" }] }
             ];
             const contactInfo = [
                 { icon: <i className="fas fa-envelope text-[#3ca2fa]"></i>, text: "support@fitconnect.com" },
@@ -486,13 +485,13 @@
             return (
                 <footer className="bg-neutral-950 relative h-fit rounded-[2.5rem] overflow-hidden m-4 md:m-8 border border-white/10 text-white">
                     <div className="max-w-7xl mx-auto p-10 md:p-14 z-40 relative">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12">
-                            <div className="flex flex-col space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pb-12 text-center">
+                            <div className="flex flex-col space-y-4 items-center">
                                 <div className="flex items-center space-x-2">
                                     <span className="text-[#3ca2fa] text-3xl font-extrabold">&hearts;</span>
                                     <span className="text-3xl font-bold text-white">FitConnect</span>
                                 </div>
-                                <p className="text-sm text-neutral-400 leading-relaxed">FitConnect is a modern platform to find the best trainers.</p>
+                                <p className="text-sm text-neutral-400 leading-relaxed">The premium platform connecting you with elite fitness professionals to achieve your goals.</p>
                             </div>
                             {footerLinks.map((section) => (
                                 <div key={section.title}>
@@ -510,7 +509,7 @@
                                 <h4 className="text-xl font-semibold mb-6 text-white">Contact Us</h4>
                                 <ul className="space-y-4">
                                     {contactInfo.map((item, i) => (
-                                        <li key={i} className="flex items-center space-x-3 text-neutral-400 text-sm">
+                                        <li key={i} className="flex items-center justify-center space-x-3 text-neutral-400 text-sm">
                                             {item.icon}<span>{item.text}</span>
                                         </li>
                                     ))}
@@ -533,6 +532,8 @@
         const rootLayout = ReactDOM.createRoot(document.getElementById('footer-root'));
         rootLayout.render(<HoverFooter />);
     </script>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

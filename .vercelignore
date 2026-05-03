@@ -1,0 +1,5 @@
+node_modules
+uploads
+*.log
+error_log.txt
+.git

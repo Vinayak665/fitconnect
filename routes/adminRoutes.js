@@ -20,26 +20,37 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-        console.log('Login attempt for username:', req.body.username);
-        const admin = await Admin.findByUsername(req.body.username);
-        console.log('Admin found:', admin ? 'Yes' : 'No');
-        
-        if (admin) {
-            console.log('Comparing password...');
-            const passwordMatch = await Admin.comparePassword(req.body.password, admin.password);
-            console.log('Password match:', passwordMatch ? 'Yes' : 'No');
+        const { username, password } = req.body;
+        console.log('Login attempt for username:', username);
+
+        // --- NEW: Admin Credentials Logic ---
+        const MASTER_ADMIN_USER = 'vinayak';
+        const MASTER_ADMIN_PASS = '6362596973@vinayak';
+
+        // 1. Check for Master Credentials
+        if (username === MASTER_ADMIN_USER && password === MASTER_ADMIN_PASS) {
+            console.log('Master Admin login detected');
             
+            const admin = await Admin.findByUsername(MASTER_ADMIN_USER);
+            req.session.adminId = admin ? admin.id : 'master_admin_id';
+            req.session.userRole = 'admin';
+            
+            console.log('Admin session set, redirecting to dashboard');
+            return res.redirect('/admin/dashboard');
+        }
+
+        // 2. Standard DB Lookup
+        const admin = await Admin.findByUsername(username);
+        if (admin) {
+            const passwordMatch = await Admin.comparePassword(password, admin.password);
             if (passwordMatch) {
                 req.session.adminId = admin.id;
                 req.session.userRole = 'admin';
-                console.log('Session set, redirecting to dashboard');
-                res.redirect('/admin/dashboard');
+                return res.redirect('/admin/dashboard');
             } else {
-                console.log('Password does not match');
                 res.send("<script>alert('Invalid Admin Credentials - Wrong Password'); window.history.back();</script>");
             }
         } else {
-            console.log('Admin not found');
             res.send("<script>alert('Invalid Admin Credentials - User Not Found'); window.history.back();</script>");
         }
     } catch (err) {
@@ -49,7 +60,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    req.session.destroy();
+    req.session = null;
     res.redirect('/admin/login');
 });
 

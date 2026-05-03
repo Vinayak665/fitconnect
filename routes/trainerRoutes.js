@@ -8,6 +8,7 @@ const { sendBookingStatusEmail } = require('../utils/mailer');
 const fs = require('fs');
 const supabase = require('../database'); // Added this
 const { cache } = require('../utils/cache'); 
+const { uploadToSupabase } = require('../utils/supabaseStorage');
 
 // Configure Multer - use memoryStorage for Vercel (read-only filesystem)
 const upload = multer({ 
@@ -70,50 +71,23 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
+        const { email, password } = req.body;
         console.log('=== Trainer Login Attempt ===');
-        console.log('Login data:', {
-            email: req.body.email,
-            hasPassword: !!req.body.password
-        });
-        
-        const trainer = await Trainer.findByEmail(req.body.email);
-        console.log('Trainer lookup result:', trainer ? 'Found' : 'Not found');
-        
+
+        const trainer = await Trainer.findByEmail(email);
         if (trainer) {
-            console.log('Trainer details:', {
-                id: trainer.id,
-                name: trainer.name,
-                status: trainer.status,
-                email: trainer.email
-            });
-            
-            const passwordMatch = await Trainer.comparePassword(req.body.password, trainer.password);
-            console.log('Password match:', passwordMatch ? 'Yes' : 'No');
-            
+            const passwordMatch = await Trainer.comparePassword(password, trainer.password);
             if (passwordMatch) {
                 if (trainer.status !== 'approved') {
-                    console.log('❌ Trainer not approved:', trainer.status);
                     return res.send("<script>alert('Your account is pending admin approval or rejected.'); window.history.back();</script>");
                 }
-                
-                // Set session data
                 req.session.trainerId = trainer.id;
                 req.session.userRole = 'trainer';
-                
-                console.log('✅ Session set:', {
-                    trainerId: req.session.trainerId,
-                    userRole: req.session.userRole,
-                    sessionId: req.sessionID
-                });
-                
-                console.log('🎯 Redirecting to dashboard...');
                 res.redirect('/trainer/dashboard');
             } else {
-                console.log('❌ Password incorrect');
                 res.send("<script>alert('Invalid Credentials'); window.history.back();</script>");
             }
         } else {
-            console.log('❌ Trainer not found');
             res.send("<script>alert('Invalid Credentials'); window.history.back();</script>");
         }
     } catch (err) {
@@ -128,11 +102,15 @@ router.get('/request', (req, res) => {
 
 router.post('/request', upload.fields([{name: 'profile_image', maxCount: 1}, {name: 'certifications', maxCount: 5}]), async (req, res) => {
     try {
+        let profileImageUrl = null;
+        if (req.files && req.files.profile_image && req.files.profile_image[0]) {
+            const file = req.files.profile_image[0];
+            profileImageUrl = await uploadToSupabase(file.buffer, file.originalname, file.mimetype);
+        }
+
         const data = {
             ...req.body,
-            // Use originalname as placeholder (memoryStorage on Vercel has no disk path)
-            profile_image: req.files && req.files.profile_image ? 
-                'trainer-' + Date.now() + path.extname(req.files.profile_image[0].originalname) : null,
+            profile_image: profileImageUrl,
             booking_amount: req.body.booking_amount || 0
         };
         await Trainer.create(data);
@@ -148,8 +126,8 @@ router.post('/request', upload.fields([{name: 'profile_image', maxCount: 1}, {na
 });
 
 router.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
+    req.session = null;
+    res.redirect('/trainer/login');
 });
 
 
@@ -183,7 +161,7 @@ router.get('/dashboard', isAuthenticated, async (req, res) => {
         
         if (!trainer) {
             console.log('❌ Trainer record not found in database, destroying session');
-            req.session.destroy();
+            req.session = null;
             return res.redirect('/trainer/login');
         }
         
@@ -219,12 +197,34 @@ router.get('/profile', isAuthenticated, (req, res) => {
     res.redirect('/trainer/dashboard');
 });
 
-router.post('/profile', isAuthenticated, upload.fields([{name: 'profile_image', maxCount: 1}, {name: 'certifications', maxCount: 5}]), async (req, res) => {
+router.post('/profile', isAuthenticated, upload.any(), async (req, res) => {
+    console.log('[DEBUG] Trainer Profile Update Request');
+    console.log('[DEBUG] Session Trainer ID:', req.session.trainerId);
+    console.log('[DEBUG] Received fields:', JSON.stringify(req.body, null, 2));
+    console.log('[DEBUG] Received files:', req.files ? req.files.map(f => ({ fieldname: f.fieldname, size: f.size })) : 'None');
     try {
         const trainer = await Trainer.findById(req.session.trainerId);
+        console.log(`[DEBUG] Updating profile for trainer: ${req.session.trainerId}`);
+        
+        let profileImageUrl = trainer.profile_image;
+        const profileImageFile = req.files.find(f => f.fieldname === 'profile_image');
+        
+        if (profileImageFile) {
+            console.log(`[DEBUG] New profile image detected: ${profileImageFile.originalname}`);
+            const newUrl = await uploadToSupabase(profileImageFile.buffer, profileImageFile.originalname, profileImageFile.mimetype);
+            if (newUrl) {
+                console.log(`[DEBUG] Successfully uploaded to Supabase: ${newUrl}`);
+                profileImageUrl = newUrl;
+            } else {
+                console.error(`[ERROR] Failed to upload profile image for trainer ${req.session.trainerId}`);
+                // Pass error via query param
+                return res.redirect('/trainer/dashboard?error=storage_policy');
+            }
+        }
+
         const data = {
             ...req.body,
-            profile_image: req.files.profile_image ? req.files.profile_image[0].filename : trainer.profile_image,
+            profile_image: profileImageUrl,
         };
         
         // Handle new certifications - temporarily disabled until database column is added
@@ -235,10 +235,21 @@ router.post('/profile', isAuthenticated, upload.fields([{name: 'profile_image', 
         // }
         
         await Trainer.updateProfile(req.session.trainerId, data);
-        res.redirect('/trainer/dashboard');
+        
+        // Clear all relevant caches
+        if (cache && typeof cache.clear === 'function') cache.clear();
+        
+        console.log(`[SUCCESS] Trainer profile updated for ID: ${req.session.trainerId}`);
+        res.redirect('/trainer/dashboard?success=profile_updated');
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Update error.");
+        console.error('❌ Profile Update Error:', err);
+        let errorMsg = "Update error.";
+        if (err.message && err.message.includes('bucket not found')) {
+            errorMsg = "Critical Error: Supabase storage bucket 'avatars' not found. Please create it in your Supabase dashboard and set it to public.";
+        } else if (err.message && err.message.includes('row-level security policy')) {
+            errorMsg = "Permission Error: Supabase Storage RLS policy violation. You must add an 'INSERT' policy to the 'avatars' bucket in your Supabase dashboard.";
+        }
+        res.status(500).send(`<script>alert("${errorMsg.replace(/"/g, '\\"')}"); window.history.back();</script>`);
     }
 });
 

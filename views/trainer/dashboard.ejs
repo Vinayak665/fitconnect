@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainer Dashboard - FitConnect</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style-optimized.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <%- include('../partials/theme-logic') %>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
         
         *{ font-family: 'Montserrat', sans-serif; }
+        
+        .fitconnect-brand { font-size: 1.5rem !important; font-weight: 800 !important; }
 
         body { 
             background-color: #0f172a; /* Slate 900 */
@@ -137,7 +139,7 @@
             <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 sidebar d-none d-lg-block">
                 <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white w-100">
                     <div class="d-flex align-items-center pb-3 mb-4 border-bottom w-100" style="border-color: rgba(255,255,255,0.1) !important;">
-                        <i class="fas fa-dumbbell fa-2x me-2 fitconnect-brand"></i>
+                        <i class="fas fa-dumbbell me-2 fitconnect-brand"></i>
                         <h5 class="mb-0 fw-bold fitconnect-brand d-none d-sm-inline">FitConnect</h5>
                     </div>
                     <a href="javascript:void(0)" onclick="showSection('overview')" id="nav-overview" class="active w-100"><i class="fas fa-home me-2"></i> <span class="d-none d-sm-inline">Overview</span></a>
@@ -153,7 +155,7 @@
             <!-- Main Content -->
             <div class="col py-0 px-0" style="height: 100vh; overflow-y: auto; overflow-x: hidden;">
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand topbar px-4 py-3 sticky-top">
+                <nav class="navbar navbar-expand-lg topbar px-4 py-3 sticky-top">
                     <span class="fw-bold text-white fs-4 d-none d-md-inline" style="letter-spacing: -0.5px;" id="main-heading">Trainer Portal</span>
                     
                     <ul class="navbar-nav ms-auto align-items-center">
@@ -163,11 +165,11 @@
                         </button>
                         <% if(typeof trainer !== 'undefined' && trainer) { %>
                             <% if(trainer.status === 'pending') { %>
-                                <li class="nav-item me-3">
+                                <li class="nav-item me-3 d-none d-sm-block">
                                     <span class="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm"><i class="fas fa-clock me-1"></i> Awaiting Approval</span>
                                 </li>
                             <% } else if(trainer.status === 'approved') { %>
-                                <li class="nav-item me-3">
+                                <li class="nav-item me-3 d-none d-sm-block">
                                     <span class="badge bg-success px-3 py-2 rounded-pill shadow-sm border border-success"><i class="fas fa-check-circle me-1"></i> Active</span>
                                 </li>
                             <% } %>
@@ -562,17 +564,16 @@
                                                         <div class="position-relative d-inline-block">
                                                             <div class="position-absolute w-100 h-100 rounded-circle bg-primary opacity-25" style="filter: blur(15px); transform: scale(1.1);"></div>
                                                             <img src="<%= imgSrc %>" class="position-relative rounded-circle shadow-sm border border-2 border-white border-opacity-25 p-1" width="130" height="130" style="object-fit: cover; z-index: 2;" onerror="this.src='/images/default-avatar.png'">
-                                                            <label class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 cursor-pointer shadow border border-white border-opacity-50" style="cursor:pointer; z-index: 5;">
+                                                            <label for="profile_image_input" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 cursor-pointer shadow border border-white border-opacity-50" style="cursor:pointer; z-index: 5;">
                                                                 <i class="fas fa-camera"></i>
-                                                                <input type="file" name="profile_image" class="d-none">
                                                             </label>
                                                         </div>
                                                     </div>
                                                     <div class="col px-md-4 mt-4 mt-md-0">
                                                         <h3 class="fw-bold text-white mb-2"><%= trainer.name %></h3>
                                                         <p class="text-muted mb-0 fs-6"><i class="fas fa-envelope me-2 opacity-75"></i><%= trainer.email %></p>
-                                                        <div class="mt-3 small" style="color: #6ee7b7;"><i class="fas fa-info-circle me-1"></i>Select a file below to replace your avatar</div>
-                                                        <input type="file" name="profile_image" class="form-control form-control-sm mt-2 border-opacity-25">
+                                                        <div class="mt-3 small" style="color: #6ee7b7;"><i class="fas fa-info-circle me-1"></i>Click the camera icon to select a new image</div>
+                                                        <input type="file" name="profile_image" id="profile_image_input" class="d-none" accept="image/*">
                                                     </div>
                                                 </div>
                                                 
@@ -855,9 +856,50 @@
                 console.error('Failed to send message:', err);
             }
         }
+        // --- Profile Image Preview ---
+        document.getElementById('profile_image_input')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.querySelector('img[width="130"]');
+                    if (img) img.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+                console.log('File selected:', file.name, file.size, file.type);
+            }
+        });
     </script>
     
-    <!-- Offcanvas removed as UI is now inline split-screen! -->
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- Success Message Handling ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            const error = urlParams.get('error');
+
+            if (success === 'profile_updated') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success position-fixed bottom-0 end-0 m-4 shadow-lg border-0 rounded-4 p-4 z-3';
+                alertDiv.style.background = '#10b981';
+                alertDiv.style.color = '#fff';
+                alertDiv.innerHTML = '<div class="d-flex align-items-center"><i class="fas fa-check-circle me-3 fs-4"></i><div><h6 class="mb-0 fw-bold">Success!</h6><p class="mb-0 small opacity-75">Your profile has been updated successfully.</p></div></div>';
+                document.body.appendChild(alertDiv);
+                setTimeout(() => alertDiv.remove(), 5000);
+            } else if (error === 'storage_policy') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger position-fixed bottom-0 end-0 m-4 shadow-lg border-0 rounded-4 p-4 z-3';
+                alertDiv.style.background = '#ef4444';
+                alertDiv.style.color = '#fff';
+                alertDiv.style.maxWidth = '400px';
+                alertDiv.innerHTML = '<div class="d-flex align-items-start"><i class="fas fa-exclamation-triangle me-3 fs-4 mt-1"></i><div><h6 class="mb-1 fw-bold">Permission Error</h6><p class="mb-0 small opacity-90">Supabase Storage is blocking the image upload due to a <b>Row-Level Security (RLS)</b> policy. Please add an "INSERT" policy to your "avatars" bucket in the Supabase Dashboard.</p></div></div>';
+                document.body.appendChild(alertDiv);
+                setTimeout(() => alertDiv.remove(), 10000);
+            }
+        });
+    </script>
 </body>
 </html>

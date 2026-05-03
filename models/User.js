@@ -47,16 +47,22 @@ class User {
             name: userData.name, 
             phone: userData.phone, 
             city: userData.city,
-            updated_at: new Date()
+            updated_at: new Date().toISOString()
         };
         if (userData.profile_image) {
             updateData.profile_image = userData.profile_image;
         }
         
+        const numericId = parseInt(id);
+        if (isNaN(numericId)) {
+            console.error(`[ERROR] User.updateProfile received invalid ID: ${id}`);
+            throw new Error('Invalid User ID');
+        }
+
         const { error } = await supabase
             .from('users')
             .update(updateData)
-            .eq('id', id);
+            .eq('id', numericId);
             
         if (error) throw error;
         return true;
@@ -126,6 +132,46 @@ class User {
             
         if (error) throw error;
         return true;
+    }
+
+    static async findOrCreateByGoogle(profile) {
+        const email = profile.emails[0].value;
+        const googleId = profile.id;
+        
+        // 1. Try to find user by google_id or email
+        let { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .or(`google_id.eq.${googleId},email.eq.${email}`)
+            .maybeSingle();
+            
+        if (error) throw error;
+        
+        if (user) {
+            // Update google_id if it's missing (user was registered via email before)
+            if (!user.google_id) {
+                await supabase
+                    .from('users')
+                    .update({ google_id: googleId })
+                    .eq('id', user.id);
+            }
+            return user;
+        }
+        
+        // 2. Create new user if not found
+        const { data: newUser, error: createError } = await supabase
+            .from('users')
+            .insert([{
+                name: profile.displayName,
+                email: email,
+                google_id: googleId,
+                profile_image: profile.photos && profile.photos[0] ? profile.photos[0].value : null
+            }])
+            .select()
+            .single();
+            
+        if (createError) throw createError;
+        return newUser;
     }
 }
 

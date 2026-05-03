@@ -150,7 +150,7 @@
                         <input type="email" name="email" placeholder="Email Address" required>
                     </div>
                     <div style="display:flex; gap:8px;">
-                        <input type="text" name="contact_number" placeholder="Phone" required>
+                        <input type="tel" name="contact_number" placeholder="Phone" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         <input type="text" name="city" placeholder="City" required>
                     </div>
                     
@@ -186,8 +186,7 @@
             <form action="/trainer/login" method="POST">
                 <h1>Coach Sign In</h1>
                 <div class="social-icons">
-                    <a href="#" class="icon"><i class="fas fa-dumbbell" style="color:#0ea5e9;"></i></a>
-                    <a href="#" class="icon"><i class="fas fa-stopwatch" style="color:#0ea5e9;"></i></a>
+                    <a href="/auth/google?role=trainer" class="icon" title="Login with Google"><i class="fa-brands fa-google"></i></a>
                 </div>
                 <span>Access your trainer dashboard</span>
                 <input type="email" name="email" placeholder="Email" required>

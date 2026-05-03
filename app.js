@@ -2,12 +2,15 @@ require('dotenv').config();
 // Server Restart Triggered: 2026-04-11 (Clear Test Data)
 const express = require('express');
 const path = require('path');
-const session = require('express-session');
+const session = require('cookie-session');
 const compression = require('compression');
 const db = require('./database'); // Initialize DB
 
 const app = express();
 const PORT = process.env.PORT || 3003;
+
+// Enable trust proxy for secure sessions on Vercel
+app.set('trust proxy', 1);
 
 // Middleware
 app.use(compression()); // Enable gzip compression
@@ -27,20 +30,21 @@ app.use('/uploads/certifications', express.static(path.join(__dirname, 'uploads/
     maxAge: '1d',
     etag: true
 }));
-app.use('/components', express.static(path.join(__dirname, 'components')));
 app.use('/lib', express.static(path.join(__dirname, 'lib')));
 
-// Session Setup with optimized settings
+// Session Setup with cookie-session (Persistent on Vercel)
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'fitconnect_secret_key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { 
-        secure: process.env.NODE_ENV === 'production', // Auto HTTPS on Vercel
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        httpOnly: true
-    }
+    name: 'session',
+    keys: [process.env.SESSION_SECRET || 'fitconnect_secret_key'],
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax'
 }));
+
+const passport = require('./utils/auth');
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Make session available to all views
 app.use((req, res, next) => {

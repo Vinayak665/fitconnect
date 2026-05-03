@@ -25,3 +25,6 @@ uploads/*
 # TypeScript build output
 dist/
 build/
+
+.vercel
+.env*.local

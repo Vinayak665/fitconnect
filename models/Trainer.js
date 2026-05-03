@@ -65,20 +65,32 @@ class Trainer {
             name: trainerData.name, 
             city: trainerData.city, 
             specialization: trainerData.specialization, 
-            experience: trainerData.experience, 
+            experience: trainerData.experience ? parseInt(trainerData.experience) : 0, 
             contact_number: trainerData.contact_number, 
-            booking_amount: trainerData.booking_amount, 
+            booking_amount: trainerData.booking_amount ? parseFloat(trainerData.booking_amount) : 0, 
             profile_image: trainerData.profile_image,
-            updated_at: new Date()
+            updated_at: new Date().toISOString()
         };
         
-        const { error } = await supabase
+        const numericId = parseInt(id);
+        if (isNaN(numericId)) {
+            console.error(`[ERROR] Trainer.updateProfile received invalid ID: ${id}`);
+            throw new Error('Invalid Trainer ID');
+        }
+
+        const { data, error } = await supabase
             .from('trainers')
             .update(updateData)
-            .eq('id', id);
-            
-        if (error) throw error;
-        return true;
+            .eq('id', numericId)
+            .select();
+
+        if (error) {
+            console.error('❌ Supabase Update Error:', error);
+            throw error;
+        }
+        
+        console.log(`[DEBUG] Update successful. Rows updated:`, data?.length);
+        return data;
     }
 
     static async updateStatus(id, status) {
@@ -176,6 +188,47 @@ class Trainer {
             
         if (error) throw error;
         return true;
+    }
+
+    static async findOrCreateByGoogle(profile) {
+        const email = profile.emails[0].value;
+        const googleId = profile.id;
+        
+        // 1. Try to find trainer by google_id or email
+        let { data: trainer, error } = await supabase
+            .from('trainers')
+            .select('*')
+            .or(`google_id.eq.${googleId},email.eq.${email}`)
+            .maybeSingle();
+            
+        if (error) throw error;
+        
+        if (trainer) {
+            // Update google_id if it's missing
+            if (!trainer.google_id) {
+                await supabase
+                    .from('trainers')
+                    .update({ google_id: googleId })
+                    .eq('id', trainer.id);
+            }
+            return trainer;
+        }
+        
+        // 2. Create new trainer if not found (default to approved for Google)
+        const { data: newTrainer, error: createError } = await supabase
+            .from('trainers')
+            .insert([{
+                name: profile.displayName,
+                email: email,
+                google_id: googleId,
+                profile_image: profile.photos && profile.photos[0] ? profile.photos[0].value : null,
+                status: 'approved' // Automatically approve Google logins for now
+            }])
+            .select()
+            .single();
+            
+        if (createError) throw createError;
+        return newTrainer;
     }
 }
 

@@ -33,6 +33,8 @@
             color: #38bdf8 !important;
             -webkit-text-fill-color: #38bdf8 !important;
             background: none !important;
+            font-size: 1.5rem !important;
+            font-weight: 800 !important;
         }
 
 
@@ -163,6 +165,7 @@
             background-color: #0F172A !important;
             color: #ffffff !important;
         }
+
     </style>
 </head>
 
@@ -178,14 +181,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <!-- Theme Switcher -->
-                    <li class="nav-item me-3">
-                        <button onclick="toggleTheme()" class="btn btn-sm d-flex align-items-center gap-2 theme-toggle-btn" 
-                                style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 8px 16px; border-radius: 20px; font-weight: 600;">
-                            <i class="fas fa-paint-brush"></i>
-                            <span>Switch Theme</span>
-                        </button>
-                    </li>
+
                     <li class="nav-item"><a class="nav-link fw-semibold" href="/search">Find a Trainer</a></li>
                     <li class="nav-item"><a class="nav-link fw-semibold" href="/trainer/login?mode=signup">Become a Trainer</a></li>
                     
@@ -304,166 +300,68 @@
             background-image: linear-gradient(to right, #38bdf8, #818cf8);
         }
 
-        /* Staggered Holographic Trainer Cards */
-        .trainer-grid-showcase {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            width: 100%;
-            max-width: 460px;
-            position: relative;
+    <style>
+        /* Feature Glass Cards */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .trainer-holo-card {
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.07);
-            padding: 22px 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            transform-style: preserve-3d;
-            position: relative;
-            overflow: hidden;
+        .glass-card:hover {
+            background: rgba(15, 23, 42, 0.6);
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
-        .trainer-holo-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(56,189,248,0.06), transparent 50%, rgba(99,102,241,0.06));
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .text-gradient {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .trainer-holo-card:hover::before { opacity: 1; }
-        .trainer-holo-card:hover { border-color: rgba(56,189,248,0.35); }
-        .trainer-holo-card:nth-child(1) { animation: float-card 5s ease-in-out infinite; box-shadow: 0 0 30px rgba(56,189,248,0.12); border-color: rgba(56,189,248,0.2); }
-        .trainer-holo-card:nth-child(2) { animation: float-card 5s ease-in-out infinite 1.2s; box-shadow: 0 0 30px rgba(99,102,241,0.12); border-color: rgba(99,102,241,0.2); margin-top: 28px; }
-        .trainer-holo-card:nth-child(3) { animation: float-card 5s ease-in-out infinite 0.6s; box-shadow: 0 0 30px rgba(244,114,182,0.12); border-color: rgba(244,114,182,0.2); margin-top: -28px; }
-        .trainer-holo-card:nth-child(4) { animation: float-card 5s ease-in-out infinite 1.8s; box-shadow: 0 0 30px rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.2); }
-        @keyframes float-card {
-            0%, 100% { transform: translateY(0px); }
+        /* Bounce Animation */
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
-        .trainer-holo-card .avatar-ring {
-            width: 60px; height: 60px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 12px;
-            font-size: 1.4rem;
-            color: white;
-            position: relative;
+        .animate-bounce-slow {
+            animation: bounce-slow 3s ease-in-out infinite;
         }
-        .trainer-holo-card .avatar-ring::after {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 0%, currentColor 50%, transparent 100%);
-            animation: spin-ring 3s linear infinite;
-            opacity: 0.6;
-        }
-        @keyframes spin-ring {
-            to { transform: rotate(360deg); }
-        }
-        .trainer-holo-card h4 { font-size: 0.88rem; font-weight: 700; color: #f1f5f9; margin-bottom: 2px; }
-        .trainer-holo-card .spec { font-size: 0.72rem; font-weight: 600; margin-bottom: 8px; }
-        .trainer-holo-card .stat-row { display: flex; gap: 8px; justify-content: center; }
-        .trainer-holo-card .stat-pill { font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.08); }
-        .trainer-holo-card .stars { color: #facc15; font-size: 0.6rem; margin-bottom: 8px; letter-spacing: 1px; }
     </style>
 
     <!-- Hero Section -->
-    <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden mesh-bg w-full">
-
-        
-        <div class="container mx-auto px-4 relative z-10 pt-4 lg:pt-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <!-- Left: Text content -->
-                <div class="text-left hero-3d-container" style="padding: 2rem 0;">
-                    <div class="hero-badge inline-block mb-6 px-4 py-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 backdrop-blur-md animate-fade-up">
+    <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden mesh-bg w-full">
+ 
+         
+        <div class="container mx-auto px-4 relative z-10 pt-6 lg:pt-8">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- Center: Text content -->
+                <div class="hero-text-content" style="padding: 1rem 0;">
+                    <div class="hero-badge inline-block mb-5 px-6 py-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 backdrop-blur-md animate-fade-up">
                         <span class="text-sky-400 font-semibold text-sm tracking-wider uppercase">Premium Fitness Experience</span>
                     </div>
                     
-                    <h1 class="text-6xl md:text-7xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight animate-fade-up" style="animation-delay: 0.1s">
+                    <h1 class="text-6xl md:text-7xl font-extrabold text-white mb-5 tracking-tight animate-fade-up" style="animation-delay: 0.1s">
                         Elevate Your <br/>
                         <span class="text-gradient">Fitness Journey</span>
                     </h1>
                     
-                    <p class="text-xl md:text-2xl text-slate-300 mb-10 max-w-xl font-light leading-relaxed animate-fade-up" style="animation-delay: 0.2s">
+                    <p class="text-xl md:text-2xl text-slate-300 mb-9 max-w-2xl mx-auto font-light leading-relaxed animate-fade-up" style="animation-delay: 0.2s">
                         Connect with elite certified personal trainers who match your goals, schedule, and preferred training style.
                     </p>
                     
-                    <div class="hero-btns flex flex-col sm:flex-row gap-4 justify-start items-center animate-fade-up" style="animation-delay: 0.3s">
-                        <a href="/search" class="group relative px-8 py-4 bg-[#0F172A] theme-classic-btn-primary text-white rounded-md font-bold text-lg overflow-hidden transition-all hover:scale-105 w-full sm:w-auto text-center text-decoration-none" style="background-color: var(--primary, #0F172A)">
+                    <div class="hero-btns flex flex-col sm:flex-row gap-5 justify-center items-center animate-fade-up" style="animation-delay: 0.3s">
+                        <a href="/search" class="group relative px-9 py-4 bg-[#0F172A] theme-classic-btn-primary text-white rounded-full font-bold text-lg overflow-hidden transition-all hover:scale-105 w-full sm:w-auto text-center text-decoration-none shadow-xl shadow-sky-500/10" style="background-color: var(--primary, #0F172A)">
                             <span class="relative z-10 flex items-center justify-center">
-                                <i class="fas fa-search me-2 group-hover:rotate-12 transition-transform"></i> Let's Train
+                                <i class="fas fa-search me-2 group-hover:rotate-12 transition-transform"></i> Find Your Trainer
                             </span>
                         </a>
                         
-                        <a href="/trainer/login?mode=signup" class="btn-trainer-join px-8 py-4 bg-transparent border-2 border-slate-700 hover:border-sky-400 text-white rounded-full font-bold text-lg transition-all hover:bg-sky-400/10 w-full sm:w-auto text-center text-decoration-none">
+                        <a href="/trainer/login?mode=signup" class="btn-trainer-join px-9 py-4 bg-transparent border-2 border-slate-700 hover:border-sky-400 text-white rounded-full font-bold text-lg transition-all hover:bg-sky-400/10 w-full sm:w-auto text-center text-decoration-none">
                             Join as Trainer
                         </a>
-                    </div>
-                </div>
-
-                <!-- Right: Floating Holographic Trainer Cards -->
-                <div class="hidden lg:flex h-[600px] w-full relative items-center justify-center">
-                    <div class="trainer-grid-showcase" id="trainerGridShowcase">
-                        <!-- Card 1 -->
-                        <div class="trainer-holo-card">
-                            <div class="avatar-ring" style="background: linear-gradient(135deg,#0ea5e9,#6366f1); color:#0ea5e9">
-                                <i class="fas fa-user-ninja"></i>
-                            </div>
-                            <h4>Alex Rivera</h4>
-                            <div class="spec" style="color:#38bdf8">HIIT Specialist</div>
-                            <div class="stars">★★★★★</div>
-                            <div class="stat-row">
-                                <span class="stat-pill">8 yrs exp</span>
-                                <span class="stat-pill">120 clients</span>
-                            </div>
-                        </div>
-                        <!-- Card 2 -->
-                        <div class="trainer-holo-card">
-                            <div class="avatar-ring" style="background: linear-gradient(135deg,#6366f1,#a855f7); color:#818cf8">
-                                <i class="fas fa-dumbbell"></i>
-                            </div>
-                            <h4>Sarah Chen</h4>
-                            <div class="spec" style="color:#818cf8">Strength Coach</div>
-                            <div class="stars">★★★★★</div>
-                            <div class="stat-row">
-                                <span class="stat-pill">6 yrs exp</span>
-                                <span class="stat-pill">98 clients</span>
-                            </div>
-                        </div>
-                        <!-- Card 3 -->
-                        <div class="trainer-holo-card">
-                            <div class="avatar-ring" style="background: linear-gradient(135deg,#f472b6,#fb923c); color:#f472b6">
-                                <i class="fas fa-running"></i>
-                            </div>
-                            <h4>Marcus Doe</h4>
-                            <div class="spec" style="color:#f472b6">Endurance Expert</div>
-                            <div class="stars">★★★★★</div>
-                            <div class="stat-row">
-                                <span class="stat-pill">10 yrs exp</span>
-                                <span class="stat-pill">200 clients</span>
-                            </div>
-                        </div>
-                        <!-- Card 4 -->
-                        <div class="trainer-holo-card">
-                            <div class="avatar-ring" style="background: linear-gradient(135deg,#34d399,#06b6d4); color:#34d399">
-                                <i class="fas fa-leaf"></i>
-                            </div>
-                            <h4>Emma Wilson</h4>
-                            <div class="spec" style="color:#34d399">Yoga & Mobility</div>
-                            <div class="stars">★★★★★</div>
-                            <div class="stat-row">
-                                <span class="stat-pill">5 yrs exp</span>
-                                <span class="stat-pill">75 clients</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -514,18 +412,23 @@
         </div>
     </section>
 
-    <!-- React + Motion Integration -->
+    <!-- React + Tailwind + Motion Integration for HoverFooter -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/framer-motion/dist/framer-motion.js"></script>
 
-    <!-- App Container -->
+    <!-- Footer -->
     <div id="footer-root"></div>
 
-    <!-- React Implementation -->
     <script type="text/babel" data-presets="react,typescript">
-        const { motion } = window.Motion;
+        const getMotion = () => {
+            if (window.Motion && window.Motion.motion) return window.Motion.motion;
+            if (window.framerMotion && window.framerMotion.motion) return window.framerMotion.motion;
+            return window.Motion || window.framerMotion;
+        };
+        const motion = getMotion();
         const cn = (...classes) => classes.filter(Boolean).join(' ');
 
         const TextHoverEffect = ({ text, duration, className }) => {
@@ -562,14 +465,16 @@
                                 </>
                             )}
                         </linearGradient>
-                        <motion.radialGradient
-                            id="revealMask" gradientUnits="userSpaceOnUse" r="20%"
-                            initial={{ cx: "50%", cy: "50%" }} animate={maskPosition}
-                            transition={{ duration: duration ?? 0, ease: "easeOut" }}
-                        >
-                            <stop offset="0%" stopColor="white" />
-                            <stop offset="100%" stopColor="black" />
-                        </motion.radialGradient>
+                        {motion && motion.radialGradient && (
+                            <motion.radialGradient
+                                id="revealMask" gradientUnits="userSpaceOnUse" r="20%"
+                                initial={{ cx: "50%", cy: "50%" }} animate={maskPosition}
+                                transition={{ duration: duration ?? 0, ease: "easeOut" }}
+                            >
+                                <stop offset="0%" stopColor="white" />
+                                <stop offset="100%" stopColor="black" />
+                            </motion.radialGradient>
+                        )}
                         <mask id="textMask">
                             <rect x="0" y="0" width="100%" height="100%" fill="url(#revealMask)" />
                         </mask>
@@ -577,11 +482,13 @@
                     <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" strokeWidth="0.3"
                         className="fill-transparent stroke-white/20 font-bold opacity-70 text-6xl"
                         style={{ opacity: hovered ? 0.7 : 0 }}>{text}</text>
-                    <motion.text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" strokeWidth="0.3"
-                        className="fill-transparent stroke-[#3ca2fa] font-bold text-6xl"
-                        initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
-                        animate={{ strokeDashoffset: 0, strokeDasharray: 1000 }}
-                        transition={{ duration: 4, ease: "easeInOut" }}>{text}</motion.text>
+                    {motion && motion.text && (
+                        <motion.text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" strokeWidth="0.3"
+                            className="fill-transparent stroke-[#3ca2fa] font-bold text-6xl"
+                            initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
+                            animate={{ strokeDashoffset: 0, strokeDasharray: 1000 }}
+                            transition={{ duration: 4, ease: "easeInOut" }}>{text}</motion.text>
+                    )}
                     <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" stroke="url(#textGradient)" strokeWidth="0.3"
                         mask="url(#textMask)" className="fill-transparent font-bold text-6xl">{text}</text>
                 </svg>
@@ -594,8 +501,7 @@
 
         const HoverFooter = () => {
             const footerLinks = [
-                { title: "About Us", links: [{ label: "Company History", href: "#" }, { label: "Meet the Team", href: "#" }, { label: "Employee Handbook", href: "#" }, { label: "Careers", href: "#" }] },
-                { title: "Helpful Links", links: [{ label: "FAQs", href: "#" }, { label: "Support", href: "#" }, { label: "Live Chat", href: "#" }] },
+                { title: "Quick Links", links: [{ label: "Find a Trainer", href: "/search" }, { label: "Become a Trainer", href: "/trainer/login?mode=signup" }, { label: "User Login", href: "/user-login" }] }
             ];
             const contactInfo = [
                 { icon: <i className="fas fa-envelope text-[#3ca2fa]"></i>, text: "support@fitconnect.com" },
@@ -604,15 +510,15 @@
             ];
 
             return (
-                <footer className="bg-neutral-950 relative h-fit rounded-[2.5rem] overflow-hidden m-8 border border-white/10 text-white">
-                    <div className="max-w-7xl mx-auto p-14 z-40 relative">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12">
-                            <div className="flex flex-col space-y-4">
+                <footer className="bg-neutral-950 relative h-fit rounded-[2.5rem] overflow-hidden m-4 md:m-8 border border-white/10 text-white">
+                    <div className="max-w-7xl mx-auto p-10 md:p-14 z-40 relative">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pb-12 text-center">
+                            <div className="flex flex-col space-y-4 items-center">
                                 <div className="flex items-center space-x-2">
                                     <span className="text-[#3ca2fa] text-3xl font-extrabold">&hearts;</span>
                                     <span className="text-3xl font-bold text-white">FitConnect</span>
                                 </div>
-                                <p className="text-sm text-neutral-400 leading-relaxed">FitConnect is a modern platform to find the best trainers.</p>
+                                <p className="text-sm text-neutral-400 leading-relaxed">The premium platform connecting you with elite fitness professionals to achieve your goals.</p>
                             </div>
                             {footerLinks.map((section) => (
                                 <div key={section.title}>
@@ -621,7 +527,6 @@
                                         {section.links.map((link) => (
                                             <li key={link.label} className="relative">
                                                 <a href={link.href} className="text-neutral-400 hover:text-[#3ca2fa] transition-colors">{link.label}</a>
-                                                {link.pulse && <span className="absolute top-1 -right-3 w-2 h-2 rounded-full bg-[#3ca2fa] animate-pulse"></span>}
                                             </li>
                                         ))}
                                     </ul>
@@ -631,7 +536,7 @@
                                 <h4 className="text-xl font-semibold mb-6 text-white">Contact Us</h4>
                                 <ul className="space-y-4">
                                     {contactInfo.map((item, i) => (
-                                        <li key={i} className="flex items-center space-x-3 text-neutral-400">
+                                        <li key={i} className="flex items-center justify-center space-x-3 text-neutral-400 text-sm">
                                             {item.icon}<span>{item.text}</span>
                                         </li>
                                     ))}
@@ -643,7 +548,7 @@
                             <p>&copy; {new Date().getFullYear()} FitConnect. All rights reserved.</p>
                         </div>
                     </div>
-                    <div className="lg:flex hidden h-[30rem] -mt-52 -mb-36">
+                    <div className="md:flex hidden h-[30rem] -mt-52 -mb-36">
                         <TextHoverEffect text="FitConnect" className="z-50" />
                     </div>
                     <FooterBackgroundGradient />
@@ -651,11 +556,21 @@
             );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('footer-root'));
-        root.render(<HoverFooter />);
+        const mountFooter = () => {
+            const rootElement = document.getElementById('footer-root');
+            if (rootElement && typeof ReactDOM !== 'undefined') {
+                ReactDOM.createRoot(rootElement).render(<HoverFooter />);
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', mountFooter);
+        } else {
+            setTimeout(mountFooter, 100);
+        }
     </script>
 
-    <!-- Bootstrap JS -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Scroll fade-in animations
@@ -668,11 +583,12 @@
             document.querySelectorAll('.animate-fade-up').forEach(el => observer.observe(el));
         });
 
-        // Custom aurora dropdown toggle (no Bootstrap dropdown JS)
+        // Custom aurora dropdown toggle
         function toggleAuroraDropdown(e) {
             e.stopPropagation();
             const menu = document.getElementById('auroraMenu');
             const chevron = document.getElementById('loginChevron');
+            if (!menu) return;
             const isOpen = menu.classList.contains('open');
             menu.classList.toggle('open', !isOpen);
             if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
@@ -687,71 +603,6 @@
                 !menu.contains(e.target) && btn && !btn.contains(e.target)) {
                 menu.classList.remove('open');
                 if (chevron) chevron.style.transform = '';
-            }
-        });
-    </script>
-    <script>
-        function toggleAuroraDropdown(e) {
-            e.preventDefault();
-            const btn = document.getElementById('loginDropdown');
-            const menu = document.getElementById('auroraMenu');
-            const chevron = document.getElementById('loginChevron');
-            if (menu) {
-                const isOpen = menu.classList.contains('open');
-                if (isOpen) {
-                    menu.classList.remove('open');
-                    if (chevron) chevron.style.transform = '';
-                } else {
-                    menu.classList.add('open');
-                    if (chevron) chevron.style.transform = 'rotate(180deg)';
-                }
-            }
-        }
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('auroraMenu');
-            const btn = document.getElementById('loginDropdown');
-            const chevron = document.getElementById('loginChevron');
-            if (menu && menu.classList.contains('open') &&
-                !menu.contains(e.target) && btn && !btn.contains(e.target)) {
-                menu.classList.remove('open');
-                if (chevron) chevron.style.transform = '';
-            }
-        });
-    </script>
-    <!-- Vanilla Tilt for 3D Effects -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof VanillaTilt !== 'undefined') {
-                VanillaTilt.init(document.querySelectorAll(".glass-card"), {
-                    max: 15,
-                    speed: 400,
-                    glare: true,
-                    "max-glare": 0.2,
-                    scale: 1.05
-                });
-                VanillaTilt.init(document.querySelector(".hero-3d-container"), {
-                    max: 5,
-                    speed: 400,
-                    perspective: 1000,
-                    scale: 1.02
-                });
-            }
-        });
-    </script>
-    <!-- Swiper JS for 3D Coverflow -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-    <script>
-        // Tilt effect on holographic trainer cards
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof VanillaTilt !== 'undefined') {
-                VanillaTilt.init(document.querySelectorAll('.trainer-holo-card'), {
-                    max: 18,
-                    speed: 400,
-                    glare: true,
-                    'max-glare': 0.15,
-                    scale: 1.04
-                });
             }
         });
     </script>
