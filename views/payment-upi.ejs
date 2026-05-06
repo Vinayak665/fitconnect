@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Payment | FitConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css?v=2">
+    <%- include('partials/theme-logic') %>
+    <style>
+        body { background-color: #020617; color: white; min-height: 100vh; display: flex; flex-direction: column; }
+        .mesh-bg {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6) !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .qr-card {
+            background: white;
+            padding: 20px;
+            border-radius: 1.5rem;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .qr-placeholder {
+            width: 250px;
+            height: 250px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            border: 2px dashed #cbd5e1;
+            border-radius: 1rem;
+        }
+        .upi-copy-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .success-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 6, 23, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .checkmark-circle {
+            width: 100px; height: 100px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+    </style>
+</head>
+<body class="mesh-bg">
+    <%- include('partials/notifications') %>
+    <div class="container py-5 flex-grow-1 d-flex align-items-center justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="glass-panel p-4 p-md-5 text-center animate-fade-up">
+                <h2 class="fw-bold mb-1">Complete Your Payment</h2>
+                <p class="text-info opacity-75 mb-4">Pay to <strong><%= trainer.name %></strong></p>
+                
+                <div class="mb-4">
+                    <div class="qr-card">
+                        <% if(trainer.qr_code) { %>
+                            <img src="<%= trainer.qr_code %>" alt="Payment QR" style="width: 250px; height: 250px; object-fit: contain;">
+                        <% } else { %>
+                            <div class="qr-placeholder">
+                                <div class="text-center">
+                                    <i class="fas fa-qrcode fa-3x mb-2"></i>
+                                    <p class="small mb-0">QR Code Not Uploaded</p>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="alert bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center px-2">
+                        <span class="text-white">Amount Due:</span>
+                        <span class="fs-3 fw-bold text-success">₹<%= booking.amount %></span>
+                    </div>
+                </div>
+
+                <div class="mb-4 text-start">
+                    <label class="small text-uppercase fw-bold text-info opacity-75 ms-2 mb-2">Trainer's UPI ID</label>
+                    <div class="upi-copy-box">
+                        <code class="text-white fs-5" id="upi_id"><%= trainer.upi_id || 'Not Provided' %></code>
+                        <button class="btn btn-link text-info p-0" onclick="copyUPI()">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <button id="confirmBtn" class="btn btn-success btn-lg w-100 rounded-pill py-3 fw-bold shadow-lg" onclick="confirmPayment()">
+                        <i class="fas fa-check-circle me-2"></i> I have paid the amount
+                    </button>
+                    <div class="mt-4">
+                        <button class="btn btn-outline-light w-100 rounded-pill py-3 opacity-90 fw-semibold" onclick="window.location.href='/search'">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Search
+                        </button>
+                    </div>
+                    <div class="mt-3">
+                        <a href="/dashboard" class="text-white opacity-50 text-decoration-none small hover-opacity-100">
+                            <i class="fas fa-home me-1"></i> Go to My Dashboard
+                        </a>
+                    </div>
+                    <p class="mt-3 small opacity-50">Once you pay, the trainer will verify and confirm your session.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Pop-up -->
+    <div id="successOverlay" class="success-overlay">
+        <div class="checkmark-circle">
+            <i class="fas fa-check"></i>
+        </div>
+        <h2 class="fw-bold mb-2">Payment Submitted!</h2>
+        <p class="opacity-75 text-center mb-4 px-4">The trainer will verify your payment shortly.<br>Redirecting to your dashboard...</p>
+    </div>
+
+    <script>
+        function copyUPI() {
+            const upi = document.getElementById('upi_id').innerText;
+            const temp = document.createElement('input');
+            temp.value = upi;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast('UPI ID copied to clipboard!', 'success');
+        }
+
+        async function confirmPayment() {
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Submitting...';
+
+            try {
+                const response = await fetch('/payment/<%= booking.id %>/confirm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('successOverlay').style.display = 'flex';
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 3000);
+                } else {
+                    showToast('Error: ' + result.error, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle me-2"></i> I have paid the amount';
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Something went wrong. Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle me-2"></i> I have paid the amount';
+            }
+        }
+
+        // Animation Observer
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-fade-up').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>

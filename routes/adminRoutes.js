@@ -48,10 +48,10 @@ router.post('/login', async (req, res) => {
                 req.session.userRole = 'admin';
                 return res.redirect('/admin/dashboard');
             } else {
-                res.send("<script>alert('Invalid Admin Credentials - Wrong Password'); window.history.back();</script>");
+                res.redirect('/admin/login?error=Invalid Admin Credentials - Wrong Password');
             }
         } else {
-            res.send("<script>alert('Invalid Admin Credentials - User Not Found'); window.history.back();</script>");
+            res.redirect('/admin/login?error=Invalid Admin Credentials - User Not Found');
         }
     } catch (err) {
         console.error('Admin login error:', err);

@@ -79,17 +79,17 @@ router.post('/login', async (req, res) => {
             const passwordMatch = await Trainer.comparePassword(password, trainer.password);
             if (passwordMatch) {
                 if (trainer.status !== 'approved') {
-                    return res.send("<script>alert('Your account is pending admin approval or rejected.'); window.history.back();</script>");
+                    return res.redirect(`/trainer/login?error=Your account is pending admin approval or rejected.`);
                 }
                 req.session.trainerId = trainer.id;
                 req.session.userRole = 'trainer';
                 res.redirect('/trainer/dashboard');
-            } else {
-                res.send("<script>alert('Invalid Credentials'); window.history.back();</script>");
-            }
         } else {
-            res.send("<script>alert('Invalid Credentials'); window.history.back();</script>");
+            res.redirect('/trainer/login?error=Invalid Credentials');
         }
+    } else {
+        res.redirect('/trainer/login?error=Invalid Credentials');
+    }
     } catch (err) {
         console.error('❌ Login error:', err);
         res.status(500).send("Login error.");
@@ -108,19 +108,27 @@ router.post('/request', upload.fields([{name: 'profile_image', maxCount: 1}, {na
             profileImageUrl = await uploadToSupabase(file.buffer, file.originalname, file.mimetype);
         }
 
+        const certFiles = req.files && req.files.certifications ? req.files.certifications : [];
+        const certificationUrls = [];
+        for (const file of certFiles) {
+            const url = await uploadToSupabase(file.buffer, file.originalname, file.mimetype);
+            if (url) certificationUrls.push(url);
+        }
+
         const data = {
             ...req.body,
             profile_image: profileImageUrl,
+            certifications: certificationUrls,
             booking_amount: req.body.booking_amount || 0
         };
         await Trainer.create(data);
-        res.send("<script>alert('Application submitted successfully! Please wait for Admin approval.'); window.location.href='/';</script>");
+        res.redirect('/?success=Application submitted successfully! Please wait for Admin approval.');
     } catch (err) {
         console.error(err);
         if (err.code === '23505') {
-            res.send("<script>alert('Email already registered! Please use a different email or login.'); window.history.back();</script>");
+            res.redirect(req.header('Referer') || '/trainer/request?error=Email already registered! Please use a different email or login.');
         } else {
-            res.status(500).send("<script>alert('Error submitting application. Please try again later.'); window.history.back();</script>");
+            res.redirect(req.header('Referer') || '/trainer/request?error=Error submitting application. Please try again later.');
         }
     }
 });
@@ -207,17 +215,30 @@ router.post('/profile', isAuthenticated, upload.any(), async (req, res) => {
         console.log(`[DEBUG] Updating profile for trainer: ${req.session.trainerId}`);
         
         let profileImageUrl = trainer.profile_image;
-        const profileImageFile = req.files.find(f => f.fieldname === 'profile_image');
+        const profileImageFile = req.files ? req.files.find(f => f.fieldname === 'profile_image') : null;
         
         if (profileImageFile) {
             console.log(`[DEBUG] New profile image detected: ${profileImageFile.originalname}`);
             const newUrl = await uploadToSupabase(profileImageFile.buffer, profileImageFile.originalname, profileImageFile.mimetype);
             if (newUrl) {
-                console.log(`[DEBUG] Successfully uploaded to Supabase: ${newUrl}`);
+                console.log(`[DEBUG] Successfully uploaded profile image: ${newUrl}`);
                 profileImageUrl = newUrl;
             } else {
                 console.error(`[ERROR] Failed to upload profile image for trainer ${req.session.trainerId}`);
-                // Pass error via query param
+                return res.redirect('/trainer/dashboard?error=storage_policy');
+            }
+        }
+
+        let qrCodeUrl = trainer.qr_code;
+        const qrCodeFile = req.files ? req.files.find(f => f.fieldname === 'qr_code') : null;
+        if (qrCodeFile) {
+            console.log(`[DEBUG] New QR code detected: ${qrCodeFile.originalname}`);
+            const newUrl = await uploadToSupabase(qrCodeFile.buffer, qrCodeFile.originalname, qrCodeFile.mimetype);
+            if (newUrl) {
+                console.log(`[DEBUG] Successfully uploaded QR code: ${newUrl}`);
+                qrCodeUrl = newUrl;
+            } else {
+                console.error(`[ERROR] Failed to upload QR code for trainer ${req.session.trainerId}`);
                 return res.redirect('/trainer/dashboard?error=storage_policy');
             }
         }
@@ -225,14 +246,24 @@ router.post('/profile', isAuthenticated, upload.any(), async (req, res) => {
         const data = {
             ...req.body,
             profile_image: profileImageUrl,
+            qr_code: qrCodeUrl,
+            upi_id: req.body.upi_id
         };
         
-        // Handle new certifications - temporarily disabled until database column is added
-        // if (req.files.certifications && req.files.certifications.length > 0) {
-        //     const newCerts = req.files.certifications.map(file => file.filename);
-        //     const existingCerts = trainer.certifications || [];
-        //     data.certifications = [...existingCerts, ...newCerts];
-        // }
+        // Handle new certifications
+        const certFiles = req.files ? req.files.filter(f => f.fieldname === 'certifications') : [];
+        if (certFiles.length > 0) {
+            console.log(`[DEBUG] ${certFiles.length} new certifications detected`);
+            const newCertUrls = [];
+            for (const file of certFiles) {
+                const url = await uploadToSupabase(file.buffer, file.originalname, file.mimetype);
+                if (url) newCertUrls.push(url);
+            }
+            const existingCerts = trainer.certifications || [];
+            data.certifications = [...existingCerts, ...newCertUrls];
+        } else {
+            data.certifications = trainer.certifications || [];
+        }
         
         await Trainer.updateProfile(req.session.trainerId, data);
         
@@ -249,7 +280,7 @@ router.post('/profile', isAuthenticated, upload.any(), async (req, res) => {
         } else if (err.message && err.message.includes('row-level security policy')) {
             errorMsg = "Permission Error: Supabase Storage RLS policy violation. You must add an 'INSERT' policy to the 'avatars' bucket in your Supabase dashboard.";
         }
-        res.status(500).send(`<script>alert("${errorMsg.replace(/"/g, '\\"')}"); window.history.back();</script>`);
+        res.redirect(`/trainer/dashboard?error=${encodeURIComponent(errorMsg)}`);
     }
 });
 
@@ -314,6 +345,30 @@ router.post('/booking/:id/status', async (req, res) => {
 
     } catch (err) {
         console.error('[DEBUG] Catch Error:', err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+router.post('/booking/:id/payment-status', isAuthenticated, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { payment_status } = req.body;
+        
+        const booking = await Booking.findById(id);
+        if (!booking || booking.trainer_id !== req.session.trainerId) {
+            return res.status(403).json({ success: false, error: 'Unauthorized' });
+        }
+
+        await Booking.updatePaymentStatus(id, payment_status);
+        
+        // Invalidate user cache
+        if (booking.user_id) {
+            cache.delete(`user_dashboard_${booking.user_id}`);
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ success: false, error: err.message });
     }
 });

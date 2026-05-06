@@ -16,7 +16,8 @@ class Trainer {
                 email: trainerData.email, 
                 password: hashedPassword, 
                 profile_image: trainerData.profile_image, 
-                booking_amount: trainerData.booking_amount
+                booking_amount: trainerData.booking_amount,
+                certifications: trainerData.certifications || []
             }])
             .select();
             
@@ -45,7 +46,7 @@ class Trainer {
 
             const { data, error } = await supabase
                 .from('trainers')
-                .select('id, name, city, specialization, experience, contact_number, email, profile_image, booking_amount, status, created_at')
+                .select('id, name, city, specialization, experience, contact_number, email, profile_image, booking_amount, status, created_at, upi_id, qr_code, certifications')
                 .eq('id', numericId)
                 .maybeSingle();
                 
@@ -69,6 +70,9 @@ class Trainer {
             contact_number: trainerData.contact_number, 
             booking_amount: trainerData.booking_amount ? parseFloat(trainerData.booking_amount) : 0, 
             profile_image: trainerData.profile_image,
+            upi_id: trainerData.upi_id,
+            qr_code: trainerData.qr_code,
+            certifications: trainerData.certifications,
             updated_at: new Date().toISOString()
         };
         
@@ -106,7 +110,7 @@ class Trainer {
     static async getAll() {
         const { data, error } = await supabase
             .from('trainers')
-            .select('id, name, city, specialization, experience, contact_number, email, profile_image, booking_amount, status, created_at')
+            .select('id, name, city, specialization, experience, contact_number, email, profile_image, booking_amount, status, created_at, upi_id, qr_code, certifications')
             .order('created_at', { ascending: false })
             .limit(100); // Limit for performance
             
@@ -117,7 +121,7 @@ class Trainer {
     static async search(city, specialization) {
         let query = supabase
             .from('trainers')
-            .select('id, name, city, specialization, experience, contact_number, email, profile_image, booking_amount, status, created_at')
+            .select('id, name, city, specialization, experience, contact_number, email, profile_image, booking_amount, status, created_at, upi_id, qr_code, certifications')
             .eq('status', 'approved')
             .order('created_at', { ascending: false })
             .limit(50); // Limit results for better performance

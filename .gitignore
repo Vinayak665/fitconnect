@@ -28,3 +28,4 @@ build/
 
 .vercel
 .env*.local
+scratch/

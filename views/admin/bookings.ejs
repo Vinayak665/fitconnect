@@ -194,7 +194,7 @@
                                                 <th class="border-top-0 border-bottom border-secondary opacity-75">Booking Date</th>
                                                 <th class="border-top-0 border-bottom border-secondary opacity-75">Client Info</th>
                                                 <th class="border-top-0 border-bottom border-secondary opacity-75">Trainer Booked</th>
-                                                <th class="border-top-0 border-bottom border-secondary opacity-75">Transaction Amount</th>
+                                                <th class="border-top-0 border-bottom border-secondary opacity-75">Payment Info</th>
                                                 <th class="border-top-0 border-bottom border-secondary opacity-75">Status</th>
                                             </tr>
                                         </thead>
@@ -212,7 +212,17 @@
                                                     <td class="py-3">
                                                         <span class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-25 px-3 py-2 shadow-sm rounded-pill"><i class="fas fa-dumbbell text-danger me-2"></i><%= b.trainer_name %></span>
                                                     </td>
-                                                    <td class="py-3 text-white fw-bold fs-5">₹<%= b.amount %></td>
+                                                    <td class="py-3">
+                                                        <div class="fw-bold text-white fs-5">₹<%= b.amount %></div>
+                                                        <% 
+                                                            let pStatus = (b.payment_status || 'pending').toLowerCase();
+                                                            let pMethod = (b.payment_method || 'offline').toLowerCase();
+                                                            let pColor = pStatus === 'paid' ? 'text-success' : (pStatus === 'paid_pending' ? 'text-info' : 'text-muted');
+                                                        %>
+                                                        <small class="d-block <%= pColor %> fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                                                            <%= pStatus.toUpperCase() %> (<%= pMethod %>)
+                                                        </small>
+                                                    </td>
                                                     <td class="py-3">
                                                         <% 
                                                             let status = (b.status || 'pending').toLowerCase();

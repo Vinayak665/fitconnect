@@ -1,0 +1,150 @@
+<script>
+    /**
+     * Globally accessible toast notification system
+     * @param {string} msg - The message to display
+     * @param {string} type - 'success', 'error', or 'info'
+     */
+    window.showToast = function(msg, type = 'info') {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.style.position = 'fixed';
+            container.style.top = '30px';
+            container.style.right = '30px';
+            container.style.zIndex = '10000';
+            container.style.minWidth = '320px';
+            container.style.maxWidth = '90vw';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '12px';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        const isSuccess = type === 'success';
+        const isError = type === 'error';
+        
+        toast.className = `custom-toast ${type} shadow-lg`;
+        
+        toast.innerHTML = `
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="fas ${isSuccess ? 'fa-check-circle' : isError ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                </div>
+                <div class="toast-message">${msg}</div>
+                <button type="button" class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="toast-progress"></div>
+        `;
+
+        container.appendChild(toast);
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.4s cubic-bezier(0.4, 0, 1, 1) forwards';
+            setTimeout(() => {
+                if (toast && toast.parentNode) {
+                    toast.remove();
+                }
+            }, 400);
+        }, 5000);
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        const error = urlParams.get('error');
+        const msg = urlParams.get('msg');
+
+        if (success) showToast(success, 'success');
+        else if (error) showToast(error, 'error');
+        else if (msg) showToast(msg, 'info');
+
+        // Clean up URL parameters without reloading
+        if (success || error || msg) {
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script>
+
+<style>
+    .custom-toast {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        padding: 16px 20px;
+        color: white;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        min-width: 320px;
+    }
+
+    .custom-toast.success { background: rgba(16, 185, 129, 0.9); }
+    .custom-toast.error { background: rgba(239, 68, 68, 0.9); }
+    .custom-toast.info { background: rgba(59, 130, 246, 0.9); }
+
+    .toast-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        z-index: 2;
+        position: relative;
+    }
+
+    .toast-icon {
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .toast-message {
+        font-weight: 600;
+        font-size: 0.95rem;
+        flex-grow: 1;
+    }
+
+    .toast-close {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        padding: 5px;
+        transition: color 0.2s;
+        font-size: 1.1rem;
+    }
+
+    .toast-close:hover { color: white; }
+
+    .toast-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.3);
+        transform-origin: left;
+        animation: progress 5s linear forwards;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(120%); opacity: 0; }
+    }
+
+    @keyframes progress {
+        from { transform: scaleX(1); }
+        to { transform: scaleX(0); }
+    }
+</style>

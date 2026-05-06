@@ -124,6 +124,7 @@
     </style>
 </head>
 <body>
+    <%- include('../partials/notifications') %>
     <% 
       let trainerData = typeof trainer !== 'undefined' ? trainer : null;
       let imgSrc = '/images/default-avatar.png';
@@ -259,7 +260,8 @@
                                                     <tr>
                                                         <th class="border-top-0 border-bottom border-secondary opacity-75">Date & Time</th>
                                                         <th class="border-top-0 border-bottom border-secondary opacity-75">Client</th>
-                                                        <th class="border-top-0 border-bottom border-secondary opacity-75 text-center">Status</th>
+                                                        <th class="border-top-0 border-bottom border-secondary opacity-75 text-center">Booking Status</th>
+                                                        <th class="border-top-0 border-bottom border-secondary opacity-75 text-center">Payment</th>
                                                         <th class="border-top-0 border-bottom border-secondary opacity-75 text-end">Action</th>
                                                     </tr>
                                                 </thead>
@@ -312,10 +314,9 @@
                                                             </td>
                                                             <td class="py-3 px-2 text-center">
                                                                 <% 
-                                                                    // status is already declared above
                                                                     if(status === 'pending') { 
                                                                 %>
-                                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-3 py-1">Pending</span>
+                                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-3 py-1">Pending Approval</span>
                                                                 <% } else if(status === 'approved' || status === 'confirmed') { %>
                                                                     <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-1">Confirmed</span>
                                                                 <% } else if(status === 'rejected' || status === 'declined') { %>
@@ -331,6 +332,22 @@
                                                                     <span class="badge rounded-pill px-3 py-1" style="background: transparent; border: 1px solid #10b981; color: #10b981; font-weight: 700;"><i class="fas fa-flag-checkered me-1"></i> Done</span>
                                                                 <% } %>
                                                             </td>
+                                                            <td class="py-3 text-center">
+                                                                <% 
+                                                                    let pStatus = (booking.payment_status || 'pending').toLowerCase();
+                                                                    let pMethod = (booking.payment_method || 'offline').toLowerCase();
+                                                                %>
+                                                                <div class="d-flex flex-column align-items-center gap-1">
+                                                                    <% if(pStatus === 'paid') { %>
+                                                                        <span class="badge bg-success rounded-pill px-2 py-1"><i class="fas fa-check-circle"></i> PAID</span>
+                                                                    <% } else if(pStatus === 'paid_pending') { %>
+                                                                        <span class="badge bg-info text-dark rounded-pill px-2 py-1" title="User says they paid, verify now"><i class="fas fa-clock"></i> VERIFY PAY</span>
+                                                                    <% } else { %>
+                                                                        <span class="badge bg-secondary rounded-pill px-2 py-1">UNPAID</span>
+                                                                    <% } %>
+                                                                    <small class="text-muted text-uppercase" style="font-size: 0.6rem;"><%= pMethod %></small>
+                                                                </div>
+                                                            </td>
                                                             <td class="py-3 text-end">
                                                                 <div class="d-flex justify-content-end gap-2" id="action-btns-<%= booking.id %>" style="transition: opacity 0.3s ease;">
                                                                     <% if(status === 'pending') { %>
@@ -344,6 +361,11 @@
                                                                             <i class="fas fa-times me-1"></i> Decline
                                                                         </button>
                                                                     <% } else if(booking.status === 'approved' || booking.status === 'confirmed') { %>
+                                                                        <% if(pStatus !== 'paid') { %>
+                                                                            <button onclick="updatePaymentStatus('<%= booking.id %>', 'paid')" class="btn btn-outline-success rounded-pill px-3 shadow-sm" style="font-size: 0.8rem;">
+                                                                                <i class="fas fa-money-bill-wave me-1"></i> Confirm Payment
+                                                                            </button>
+                                                                        <% } %>
                                                                         <button onclick="updateBookingStatus('<%= booking.id %>', 'done')" class="btn btn-action-done rounded-pill px-3 shadow-sm">
                                                                             <i class="fas fa-check-double me-1"></i> Mark Done
                                                                         </button>
@@ -376,7 +398,7 @@
 
                         <!-- Completed Section -->
                         <div id="completed-section" class="dashboard-section d-none">
-                            <h2 class="text-white fw-bold mb-4">Completed Sessions</h2>
+                            <h2 class="fw-bold mb-4" style="color: #1e293b;">Completed Sessions</h2>
                             
                             <div class="card glass-panel rounded-4 border-0">
                                 <div class="card-header bg-transparent py-4 border-bottom border-secondary border-opacity-25 d-flex align-items-center">
@@ -618,6 +640,27 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12 mt-4">
+                                                        <div class="row g-4">
+                                                            <div class="col-md-6">
+                                                                <label class="form-label fw-bold text-uppercase small opacity-75 ms-1">UPI ID for Payments</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text px-4 border-end-0"><i class="fas fa-mobile-alt text-info"></i></span>
+                                                                    <input type="text" name="upi_id" class="form-control py-3 px-3 border-start-0" value="<%= trainer.upi_id %>" placeholder="username@upi">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label fw-bold text-uppercase small opacity-75 ms-1">Payment QR Code</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text px-4 border-end-0"><i class="fas fa-qrcode text-info"></i></span>
+                                                                    <input type="file" name="qr_code" class="form-control py-3 px-3 border-start-0" accept="image/*">
+                                                                </div>
+                                                                <% if(trainer.qr_code) { %>
+                                                                    <small class="text-success d-block mt-1 ms-1"><i class="fas fa-check-circle"></i> Current QR Code uploaded</small>
+                                                                <% } %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 mt-4">
                                                         <label class="form-label fw-bold text-uppercase small opacity-75 ms-1">Update Certifications (PDF/JPG)</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text px-4 border-end-0"><i class="fas fa-file-pdf text-danger"></i></span>
@@ -706,7 +749,7 @@
             const input = document.getElementById('suggest-input-' + id);
             const suggestion = input ? input.value.trim() : '';
             if(!suggestion) {
-                alert('Please enter a new time or suggestion first.');
+                showToast('Please enter a new time or suggestion first.', 'error');
                 if(input) input.focus();
                 return;
             }
@@ -731,7 +774,7 @@
                 console.log('Server response status:', response.status);
                 
                 if (response.status === 401) {
-                    alert('Your session has expired. Redirecting to login...');
+                    showToast('Your session has expired. Redirecting to login...', 'error');
                     window.location.href = '/trainer/login';
                     return;
                 }
@@ -747,11 +790,32 @@
                     // Update UI without full reload
                     location.reload(); 
                 } else {
-                    alert('Error: ' + (result.error || 'Failed to update booking.'));
+                    showToast('Error: ' + (result.error || 'Failed to update booking.'), 'error');
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert(`An error occurred: ${err.message}. If this persists, please try logging in again.`);
+                showToast(`An error occurred: ${err.message}. If this persists, please try logging in again.`, 'error');
+            }
+        }
+
+        async function updatePaymentStatus(bookingId, payment_status) {
+            if (!confirm(`Mark this booking as ${payment_status.toUpperCase()}?`)) return;
+
+            try {
+                const response = await fetch(`/trainer/booking/${bookingId}/payment-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ payment_status })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    showToast('Error: ' + result.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Something went wrong.', 'error');
             }
         }
 
@@ -850,7 +914,7 @@
                 if (result.success) {
                     fetchMessages();
                 } else {
-                    alert('Error: ' + result.error);
+                    showToast('Error: ' + result.error, 'error');
                 }
             } catch (err) {
                 console.error('Failed to send message:', err);
@@ -874,32 +938,5 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // --- Success Message Handling ---
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const success = urlParams.get('success');
-            const error = urlParams.get('error');
-
-            if (success === 'profile_updated') {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success position-fixed bottom-0 end-0 m-4 shadow-lg border-0 rounded-4 p-4 z-3';
-                alertDiv.style.background = '#10b981';
-                alertDiv.style.color = '#fff';
-                alertDiv.innerHTML = '<div class="d-flex align-items-center"><i class="fas fa-check-circle me-3 fs-4"></i><div><h6 class="mb-0 fw-bold">Success!</h6><p class="mb-0 small opacity-75">Your profile has been updated successfully.</p></div></div>';
-                document.body.appendChild(alertDiv);
-                setTimeout(() => alertDiv.remove(), 5000);
-            } else if (error === 'storage_policy') {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-danger position-fixed bottom-0 end-0 m-4 shadow-lg border-0 rounded-4 p-4 z-3';
-                alertDiv.style.background = '#ef4444';
-                alertDiv.style.color = '#fff';
-                alertDiv.style.maxWidth = '400px';
-                alertDiv.innerHTML = '<div class="d-flex align-items-start"><i class="fas fa-exclamation-triangle me-3 fs-4 mt-1"></i><div><h6 class="mb-1 fw-bold">Permission Error</h6><p class="mb-0 small opacity-90">Supabase Storage is blocking the image upload due to a <b>Row-Level Security (RLS)</b> policy. Please add an "INSERT" policy to your "avatars" bucket in the Supabase Dashboard.</p></div></div>';
-                document.body.appendChild(alertDiv);
-                setTimeout(() => alertDiv.remove(), 10000);
-            }
-        });
-    </script>
 </body>
 </html>

@@ -100,8 +100,14 @@ router.post('/book/:trainerId', async (req, res) => {
             booking_date: req.body.booking_date,
             amount: req.body.amount,
             trainer_id: req.params.trainerId,
-            user_id: req.session.userId || null 
+            user_id: req.session.userId || null,
+            payment_method: req.body.payment_method || 'offline',
+            payment_status: 'pending'
         };
+
+        if (!data.booking_date) {
+            return res.redirect(req.header('Referer') || '/search?error=Please select a date and time.');
+        }
 
         // Fetch occupied slots to check for collisions
         const occupied = await Booking.getOccupiedSlots(req.params.trainerId);
@@ -123,19 +129,21 @@ router.post('/book/:trainerId', async (req, res) => {
         });
 
         if (isOccupied) {
-            return res.send("<script>alert('Sorry, this slot was just taken by another user. Please choose a different time.'); window.history.back();</script>");
+            return res.redirect(req.header('Referer') || '/search?error=Sorry, this slot was just taken by another user. Please choose a different time.');
         }
 
-        await Booking.create(data);
+        const bookingId = await Booking.create(data);
         
-        // Invalidate dashboard cache for this user so they see the new booking immediately
+        // Invalidate dashboard cache
         if (req.session.userId) {
-            const cacheKey = `user_dashboard_${req.session.userId}`;
-            cache.delete(cacheKey);
-            console.log(`[DEBUG] Cache cleared for user ${req.session.userId}`);
+            cache.delete(`user_dashboard_${req.session.userId}`);
         }
 
-        res.send("<script>alert('Booking successful!'); window.location.href='/dashboard';</script>");
+        if (data.payment_method === 'online') {
+            return res.redirect(`/payment/${bookingId}`);
+        }
+
+        res.redirect('/dashboard?success=Booking successful!');
     } catch (err) {
         console.error(err);
         res.status(500).send("Error creating booking.");
@@ -151,13 +159,13 @@ router.get('/user-login', (req, res) => {
 router.post('/user/register', async (req, res) => {
     try {
         await User.create(req.body);
-        res.send("<script>alert('Registration successful! Please login.'); window.location.href='/user-login';</script>");
+        res.redirect('/user-login?success=Registration successful! Please login.');
     } catch (err) {
         console.error(err);
         if (err.code === '23505') {
-            res.send("<script>alert('Email already registered! Please use a different email or login.'); window.history.back();</script>");
+            res.redirect(req.header('Referer') || '/user-login?error=Email already registered! Please use a different email or login.');
         } else {
-            res.status(500).send("<script>alert('Error during registration. Please try again later.'); window.history.back();</script>");
+            res.redirect(req.header('Referer') || '/user-login?error=Error during registration. Please try again later.');
         }
     }
 });
@@ -172,7 +180,7 @@ router.post('/user/login', async (req, res) => {
             req.session.userRole = 'user';
             res.redirect('/dashboard');
         } else {
-            res.send("<script>alert('Invalid Credentials'); window.history.back();</script>");
+            res.redirect('/user-login?error=Invalid Credentials');
         }
     } catch (err) {
         console.error(err);
@@ -197,20 +205,28 @@ router.get('/auth/google', (req, res, next) => {
 });
 
 router.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/user-login' }),
-    (req, res) => {
-        const user = req.user;
-        const role = user.role;
-        
-        if (role === 'trainer') {
-            req.session.trainerId = user.id;
-            req.session.userRole = 'trainer';
-            res.redirect('/trainer/dashboard');
-        } else {
-            req.session.userId = user.id;
-            req.session.userRole = 'user';
-            res.redirect('/dashboard');
-        }
+    (req, res, next) => {
+        passport.authenticate('google', (err, user, info) => {
+            if (err) {
+                console.error('❌ Passport Auth Error:', err);
+                return res.redirect(`/user-login?error=${encodeURIComponent('Google login failed. Please try again.')}`);
+            }
+            if (!user) {
+                return res.redirect(`/user-login?error=${encodeURIComponent('Google authentication cancelled.')}`);
+            }
+            
+            // Log user in manually since we are using custom callback
+            const role = user.role;
+            if (role === 'trainer') {
+                req.session.trainerId = user.id;
+                req.session.userRole = 'trainer';
+                res.redirect('/trainer/dashboard?success=Logged in with Google');
+            } else {
+                req.session.userId = user.id;
+                req.session.userRole = 'user';
+                res.redirect('/dashboard?success=Logged in with Google');
+            }
+        })(req, res, next);
     }
 );
 
@@ -289,7 +305,7 @@ router.post('/forgot-password', async (req, res) => {
                 emailError: !emailSent 
             });
         } else {
-            res.send("<script>alert('No account found with that email.'); window.history.back();</script>");
+            res.redirect(req.header('Referer') || '/forgot-password?error=No account found with that email.');
         }
     } catch (err) {
         console.error(err);
@@ -317,7 +333,7 @@ router.post('/verify-otp', async (req, res) => {
             
             res.render('user/forgot-password', { step: 3, role: req.session.resetRole || 'user' });
         } else {
-            res.send(`<script>alert('${result.message}'); window.history.back();</script>`);
+            res.redirect(req.header('Referer') || `/forgot-password?error=${encodeURIComponent(result.message)}`);
         }
     } catch (err) {
         console.error(err);
@@ -334,7 +350,7 @@ router.post('/reset-password', async (req, res) => {
     }
 
     if (password !== confirmPassword) {
-        return res.send("<script>alert('Passwords do not match.'); window.history.back();</script>");
+        return res.redirect(req.header('Referer') || '/forgot-password?error=Passwords do not match.');
     }
 
     try {
@@ -351,7 +367,7 @@ router.post('/reset-password', async (req, res) => {
         delete req.session.otpVerified;
 
         const loginUrl = resetRole === 'trainer' ? '/trainer/login' : '/user-login';
-        res.send(`<script>alert('Password updated successfully! Please login with your new password.'); window.location.href='${loginUrl}';</script>`);
+        res.redirect(`${loginUrl}?success=Password updated successfully! Please login with your new password.`);
     } catch (err) {
         console.error(err);
         res.status(500).send("Error updating password.");
@@ -422,6 +438,68 @@ router.post('/edit-profile', isAuthenticated, upload.single('profile_image'), as
     } catch (err) {
         console.error(err);
         res.status(500).send("Error updating profile.");
+    }
+});
+
+router.get('/payment/:bookingId', async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.bookingId);
+        if (!booking) {
+            return res.status(404).send("Booking not found");
+        }
+
+        // Allow access if it's a guest booking OR if it belongs to the logged-in user
+        console.log('[DEBUG] Payment Access Check');
+        console.log(' - Booking User ID:', booking.user_id, typeof booking.user_id);
+        console.log(' - Session User ID:', req.session.userId, typeof req.session.userId);
+
+        if (booking.user_id) {
+            if (!req.session.userId) {
+                console.log(' - Redirecting to login (no session)');
+                return res.redirect('/user-login');
+            }
+            if (booking.user_id != req.session.userId) {
+                console.log(' - Access Denied (ID mismatch)');
+                return res.redirect('/?error=Unauthorized: This booking belongs to a different account. Please login with the correct account.');
+            }
+        }
+        console.log(' - Access Granted');
+
+        const trainer = await Trainer.findById(booking.trainer_id);
+        res.render('payment-upi', { booking, trainer });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error loading payment page");
+    }
+});
+
+router.post('/payment/:bookingId/confirm', async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.bookingId);
+        if (!booking) {
+            return res.status(404).json({ success: false, error: 'Booking not found' });
+        }
+
+        // Allow confirmation if it's a guest booking OR if it belongs to the logged-in user
+        if (booking.user_id) {
+            if (!req.session.userId) {
+                return res.status(401).json({ success: false, error: 'Authentication required' });
+            }
+            if (booking.user_id != req.session.userId) {
+                return res.status(403).json({ success: false, error: 'Unauthorized' });
+            }
+        }
+
+        await Booking.updatePaymentStatus(req.params.bookingId, 'paid_pending');
+        
+        if (req.session.userId) {
+            cache.delete(`user_dashboard_${req.session.userId}`);
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 

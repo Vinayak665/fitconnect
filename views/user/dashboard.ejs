@@ -89,6 +89,7 @@
     </style>
 </head>
 <body>
+    <%- include('../partials/notifications') %>
     <!-- Content Starts Here -->
 
     <div class="container-fluid p-0">
@@ -140,38 +141,12 @@
 
                 <div class="p-4 p-md-5">
                     <div class="d-sm-flex align-items-center justify-content-between mb-5">
-                        <h1 class="h2 mb-0 text-white fw-bold" style="letter-spacing: -0.5px;" id="main-heading">My Dashboard</h1>
+                        <h1 class="h2 mb-0 fw-bold" style="letter-spacing: -0.5px; color: #1e293b;" id="main-heading">My Dashboard</h1>
                         <a href="/search" class="d-none d-sm-inline-block btn btn-modern btn-lg rounded-pill px-4 shadow-lg"><i class="fas fa-plus fa-sm text-white-50 me-2"></i> Book New Session</a>
                     </div>
                     <div id="overview-section" class="dashboard-section">
                         <div class="row g-4">
-                            <div class="col-lg-4 mb-4">
-                                <!-- Profile Card -->
-                                <div class="card glass-panel rounded-4 p-5 text-center h-100 border-0">
-                                <div class="position-relative d-inline-block mx-auto mb-4">
-                                    <div class="position-absolute w-100 h-100 rounded-circle bg-primary opacity-50" style="filter: blur(20px); transform: scale(0.9);"></div>
-                                    <img src="<%= user.profile_image ? (user.profile_image.startsWith('http') ? user.profile_image : '/uploads/' + user.profile_image) : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' %>" class="rounded-circle position-relative shadow border border-3 border-white border-opacity-25" style="width: 140px; height: 140px; object-fit: cover; z-index: 2;">
-                                </div>
-                                <h3 class="fw-bold text-white mb-2"><%= user.name %></h3>
-                                <p class="text-muted mb-4 fs-6"><i class="fas fa-envelope me-2 opacity-75"></i> <%= user.email %></p>
-                                
-                                <div class="glass-panel-content rounded-4 p-3 mb-4">
-                                    <div class="d-flex justify-content-between text-white align-items-center mb-2">
-                                        <div class="d-flex align-items-center opacity-75"><i class="fas fa-map-marker-alt me-2 text-primary fs-5"></i> <span class="small text-uppercase fw-bold">Location</span></div>
-                                        <span class="fw-medium"><%= user.city || 'Not set' %></span>
-                                    </div>
-                                    <hr class="border-secondary opacity-25 my-2">
-                                    <div class="d-flex justify-content-between text-white align-items-center">
-                                        <div class="d-flex align-items-center opacity-75"><i class="fas fa-phone me-2 text-primary fs-5"></i> <span class="small text-uppercase fw-bold">Phone</span></div>
-                                        <span class="fw-medium"><%= user.phone || 'Not set' %></span>
-                                    </div>
-                                </div>
-                                
-                                <a href="/edit-profile" class="btn btn-outline-light w-100 rounded-pill py-2 fw-medium border-opacity-25 hover-bg-white hover-text-dark transition-all">Edit Settings</a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-8">
+                        <div class="col-12">
                             <!-- Bookings Card -->
                             <div class="card glass-panel rounded-4 p-4 p-md-5 h-100 border-0">
                                 <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
@@ -189,6 +164,7 @@
                                                     <th class="border-top-0 border-bottom border-secondary opacity-75">Date & Time</th>
                                                     <th class="border-top-0 border-bottom border-secondary opacity-75">Trainer</th>
                                                     <th class="border-top-0 border-bottom border-secondary opacity-75">Amount</th>
+                                                    <th class="border-top-0 border-bottom border-secondary opacity-75">Payment</th>
                                                     <th class="border-top-0 border-bottom border-secondary opacity-75 text-end">Status</th>
                                                 </tr>
                                             </thead>
@@ -212,6 +188,26 @@
                                                         </td>
                                                         <td class="py-3">
                                                             <div class="fw-bold" style="color: #86efac;">₹<%= booking.amount || 0 %></div>
+                                                        </td>
+                                                        <td class="py-3">
+                                                            <% 
+                                                                let pStatus = (booking.payment_status || 'pending').toLowerCase();
+                                                                let pMethod = (booking.payment_method || 'offline').toLowerCase();
+                                                            %>
+                                                            <div class="d-flex flex-column gap-1">
+                                                                <% if(pStatus === 'paid') { %>
+                                                                    <span class="badge bg-success rounded-pill px-2 py-1 w-auto d-inline-block" style="font-size: 0.65rem;"><i class="fas fa-check-circle"></i> PAID</span>
+                                                                <% } else if(pStatus === 'paid_pending') { %>
+                                                                    <span class="badge bg-info text-dark rounded-pill px-2 py-1 w-auto d-inline-block" style="font-size: 0.65rem;"><i class="fas fa-clock"></i> VERIFYING</span>
+                                                                <% } else { %>
+                                                                    <% if(pMethod === 'online') { %>
+                                                                        <a href="/payment/<%= booking.id %>" class="btn btn-sm btn-primary rounded-pill py-0 px-2 fw-bold" style="font-size: 0.65rem;">PAY NOW</a>
+                                                                    <% } else { %>
+                                                                        <span class="badge bg-secondary rounded-pill px-2 py-1 w-auto d-inline-block" style="font-size: 0.65rem;">UNPAID</span>
+                                                                    <% } %>
+                                                                <% } %>
+                                                                <small class="text-muted text-uppercase" style="font-size: 0.55rem;"><%= pMethod %></small>
+                                                            </div>
                                                         </td>
                                                         <td class="py-3 text-end">
                                                             <% 
@@ -394,11 +390,11 @@
                 if (result.success) {
                     location.reload();
                 } else {
-                    alert('Error: ' + (result.error || 'Update failed'));
+                    showToast('Error: ' + (result.error || 'Update failed'), 'error');
                 }
             } catch (err) {
                 console.error(err);
-                alert('Connection error. Please try again.');
+                showToast('Connection error. Please try again.', 'error');
             }
         }
     </script>
@@ -490,11 +486,11 @@
                 if (result.success) {
                     fetchMessages();
                 } else {
-                    alert('Send error: ' + result.error);
+                    showToast('Send error: ' + result.error, 'error');
                     input.value = content; // restore message
                 }
             } catch (err) {
-                alert('Network error: ' + err.message);
+                showToast('Network error: ' + err.message, 'error');
                 input.value = content;
             }
         }
@@ -503,32 +499,5 @@
     <!-- Offcanvas removed as UI is now inline! -->
 
 
-    <script>
-        // --- Success Message Handling ---
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const success = urlParams.get('success');
-            const error = urlParams.get('error');
-
-            if (success === 'profile_updated') {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success position-fixed bottom-0 end-0 m-4 shadow-lg border-0 rounded-4 p-4 z-3';
-                alertDiv.style.background = '#0ea5e9';
-                alertDiv.style.color = '#fff';
-                alertDiv.innerHTML = '<div class="d-flex align-items-center"><i class="fas fa-check-circle me-3 fs-4"></i><div><h6 class="mb-0 fw-bold">Profile Updated!</h6><p class="mb-0 small opacity-75">Your changes have been saved successfully.</p></div></div>';
-                document.body.appendChild(alertDiv);
-                setTimeout(() => alertDiv.remove(), 5000);
-            } else if (error === 'storage_policy') {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-danger position-fixed bottom-0 end-0 m-4 shadow-lg border-0 rounded-4 p-4 z-3';
-                alertDiv.style.background = '#ef4444';
-                alertDiv.style.color = '#fff';
-                alertDiv.style.maxWidth = '400px';
-                alertDiv.innerHTML = '<div class="d-flex align-items-start"><i class="fas fa-exclamation-triangle me-3 fs-4 mt-1"></i><div><h6 class="mb-1 fw-bold">Upload Failed</h6><p class="mb-0 small opacity-90">Your profile image could not be saved due to Supabase <b>Row-Level Security (RLS)</b>. Please enable "INSERT" permissions for the "avatars" bucket in your Supabase settings.</p></div></div>';
-                document.body.appendChild(alertDiv);
-                setTimeout(() => alertDiv.remove(), 10000);
-            }
-        });
-    </script>
 </body>
 </html>
