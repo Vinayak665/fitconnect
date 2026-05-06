@@ -24,7 +24,7 @@ class Booking {
     static async findById(id) {
         const { data, error } = await supabase
             .from('bookings')
-            .select('*, trainers(name)')
+            .select('*')
             .eq('id', id)
             .single();
             

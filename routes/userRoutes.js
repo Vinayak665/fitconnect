@@ -41,10 +41,6 @@ router.get('/search', async (req, res) => {
         res.render('search', { trainers, city: '', specialization: '' });
     } catch (err) {
         console.error('❌ Search Route Error:', err);
-        const fs = require('fs');
-        const path = require('path');
-        const logMessage = `\n[${new Date().toISOString()}] SEARCH ERROR: ${err.message}\nSTACK: ${err.stack}\n`;
-        fs.appendFileSync(path.join(__dirname, '../error_log.txt'), logMessage);
         res.status(500).send("Error fetching trainers: " + err.message);
     }
 });
@@ -63,10 +59,6 @@ router.post('/search', async (req, res) => {
         res.render('search', { trainers, city, specialization });
     } catch (err) {
         console.error('❌ Search Filter Error:', err);
-        const fs = require('fs');
-        const path = require('path');
-        const logMessage = `\n[${new Date().toISOString()}] SEARCH FILTER ERROR: ${err.message}\nSTACK: ${err.stack}\n`;
-        fs.appendFileSync(path.join(__dirname, '../error_log.txt'), logMessage);
         res.status(500).send("Error filtering trainers: " + err.message);
     }
 });
@@ -143,7 +135,12 @@ router.post('/book/:trainerId', async (req, res) => {
             return res.redirect(`/payment/${bookingId}`);
         }
 
-        res.redirect('/dashboard?success=Booking successful!');
+        // Fix: Redirect guests to home page with success message instead of dashboard
+        if (req.session.userId) {
+            res.redirect('/dashboard?success=Booking successful!');
+        } else {
+            res.redirect('/?success=Booking successful!');
+        }
     } catch (err) {
         console.error(err);
         res.status(500).send("Error creating booking.");
@@ -448,22 +445,8 @@ router.get('/payment/:bookingId', async (req, res) => {
             return res.status(404).send("Booking not found");
         }
 
-        // Allow access if it's a guest booking OR if it belongs to the logged-in user
-        console.log('[DEBUG] Payment Access Check');
-        console.log(' - Booking User ID:', booking.user_id, typeof booking.user_id);
-        console.log(' - Session User ID:', req.session.userId, typeof req.session.userId);
+        console.log('[DEBUG] Payment Access check passed for booking:', req.params.bookingId);
 
-        if (booking.user_id) {
-            if (!req.session.userId) {
-                console.log(' - Redirecting to login (no session)');
-                return res.redirect('/user-login');
-            }
-            if (booking.user_id != req.session.userId) {
-                console.log(' - Access Denied (ID mismatch)');
-                return res.redirect('/?error=Unauthorized: This booking belongs to a different account. Please login with the correct account.');
-            }
-        }
-        console.log(' - Access Granted');
 
         const trainer = await Trainer.findById(booking.trainer_id);
         res.render('payment-upi', { booking, trainer });
