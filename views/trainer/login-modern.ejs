@@ -111,6 +111,30 @@
             display: block;
         }
 
+        /* Password Toggle Styles */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            z-index: 10;
+            padding: 5px;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .password-wrapper .toggle-password:hover {
+            color: #0ea5e9;
+        }
+        .password-wrapper input {
+            padding-right: 40px !important;
+        }
+
     </style>
     <% if (typeof mode !== 'undefined' && mode === 'signup') { %>
     <style>
@@ -175,7 +199,10 @@
                     <label class="file-label"><i class="fas fa-file-pdf"></i> Certifications (PDF/JPG)</label>
                     <input type="file" name="certifications" accept=".pdf,.jpg,.jpeg,.png" multiple>
 
-                    <input type="password" name="password" placeholder="Set Dashboard Password" required>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="applyPassword" placeholder="Set Dashboard Password" required>
+                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('applyPassword', this)"></i>
+                    </div>
                 </div>
                 
                 <button type="submit">Submit Application</button>
@@ -191,7 +218,10 @@
                 </div>
                 <span>Access your trainer dashboard</span>
                 <input type="email" name="email" placeholder="Email" required>
-                <input type="password" name="password" placeholder="Password" required>
+                <div class="password-wrapper">
+                    <input type="password" name="password" id="loginPassword" placeholder="Password" required>
+                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('loginPassword', this)"></i>
+                </div>
                 <a href="/forgot-password?role=trainer">Forgot Your Password?</a>
                 <button type="submit">Sign In</button>
             </form>
@@ -265,6 +295,19 @@
         window.addEventListener('load', revealPage);
 
         // Removed floating animations for professional theme
+        // Password Toggle Function
+        function togglePasswordVisibility(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 </body>
 </html>
