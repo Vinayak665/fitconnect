@@ -206,14 +206,17 @@ router.get('/auth/google/callback',
         passport.authenticate('google', (err, user, info) => {
             if (err) {
                 console.error('❌ Passport Auth Error:', err);
-                return res.redirect(`/user-login?error=${encodeURIComponent('Google login failed. Please try again.')}`);
+                return res.redirect(`/user-login?error=${encodeURIComponent('Google login failed: ' + err.message)}`);
             }
             if (!user) {
-                return res.redirect(`/user-login?error=${encodeURIComponent('Google authentication cancelled.')}`);
+                console.warn('⚠️ Google Auth Warning: No user returned');
+                return res.redirect(`/user-login?error=${encodeURIComponent('Google authentication cancelled or failed.')}`);
             }
             
             // Log user in manually since we are using custom callback
-            const role = user.role;
+            const role = user.role || 'user';
+            console.log(`✅ Google Login Success: ${user.email} as ${role}`);
+            
             if (role === 'trainer') {
                 req.session.trainerId = user.id;
                 req.session.userRole = 'trainer';
