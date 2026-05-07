@@ -75,7 +75,7 @@
             transition: opacity 0.22s cubic-bezier(0.16,1,0.3,1),
                         transform 0.22s cubic-bezier(0.16,1,0.3,1);
             visibility: hidden;
-            z-index: 1000;
+            z-index: 1050;
         }
         .aurora-dropdown.open {
             opacity: 1;
@@ -252,7 +252,7 @@
     <div class="container mb-5 pb-5">
         
         <!-- Search Filter Form -->
-        <div class="glass-panel p-4 mb-5 animate-fade-up">
+        <div class="glass-panel p-4 mb-5 animate-fade-up" style="position: relative; z-index: 101;">
             <form action="/search" method="POST" class="row border-0 g-3 align-items-end">
                 <div class="col-md-5">
                     <label class="form-label fw-bold"><i class="fas fa-map-marker-alt text-info me-2"></i>City Location</label>
