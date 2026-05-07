@@ -127,7 +127,7 @@
                         </button>
                         <div class="dropdown">
                             <button class="btn dropdown-toggle border-0 fw-bold text-white d-flex align-items-center glass-panel rounded-pill py-2 px-3" type="button" data-bs-toggle="dropdown" style="background: rgba(255,255,255,0.1) !important;">
-                                <img src="<%= user.profile_image ? (user.profile_image.startsWith('http') ? user.profile_image : '/uploads/' + user.profile_image) : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' %>" class="rounded-circle me-2 border border-2 border-primary" width="32" style="height: 32px; object-fit: cover;">
+                                <img src="<%= user.profile_image ? (user.profile_image.startsWith('http') ? user.profile_image : '/uploads/' + user.profile_image) : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' %>" class="rounded-circle me-2 border border-2 border-primary" width="32" style="height: 32px; object-fit: cover; object-position: center top;">
                                 <%= user.name %>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3">

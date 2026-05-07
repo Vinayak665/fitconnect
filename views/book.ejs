@@ -78,7 +78,7 @@
                                 %>
                                 <div class="position-relative d-inline-block">
                                     <div class="position-absolute w-100 h-100 rounded-circle bg-info opacity-25" style="filter: blur(15px); transform: scale(1.1);"></div>
-                                    <img src="<%= imgSrc %>" class="rounded-circle shadow-lg mb-4 border border-info border-opacity-25 position-relative" style="width: 160px; height: 160px; object-fit: cover; z-index: 2;" alt="<%= trainer.name %>" onerror="this.src='/images/default-avatar.png'">
+                                    <img src="<%= imgSrc %>" class="rounded-circle shadow-lg mb-4 border border-info border-opacity-25 position-relative" style="width: 160px; height: 160px; object-fit: cover; object-position: center top; z-index: 2;" alt="<%= trainer.name %>" onerror="this.src='/images/default-avatar.png'">
                                 </div>
                                 <h4 class="fw-bold text-white"><%= trainer.name %></h4>
                                 <span class="badge bg-info bg-opacity-10 border border-info border-opacity-25 text-info rounded-pill px-3 py-2 shadow-sm mt-2"><%= trainer.specialization %> Specialist</span>
