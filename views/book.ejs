@@ -113,16 +113,16 @@
                                 
                                 <div class="mb-4">
                                     <label class="form-label fw-bold text-info small text-uppercase tracking-wider">Full Name</label>
-                                    <input type="text" name="client_name" class="form-control py-3 rounded-3 shadow-sm" placeholder="John Doe" required>
+                                    <input type="text" name="client_name" class="form-control py-3 rounded-3 shadow-sm" placeholder="John Doe" value="<%= locals.user ? user.name : '' %>" required>
                                 </div>
                                 <div class="row mb-4 g-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold text-info small text-uppercase tracking-wider">Phone Number</label>
-                                        <input type="tel" name="client_phone" class="form-control py-3 rounded-3 shadow-sm" placeholder="+91 0000000000" required>
+                                        <input type="tel" name="client_phone" class="form-control py-3 rounded-3 shadow-sm" placeholder="+91 0000000000" value="<%= locals.user ? user.phone : '' %>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold text-info small text-uppercase tracking-wider">Email Address</label>
-                                        <input type="email" name="client_email" class="form-control py-3 rounded-3 shadow-sm" placeholder="john@example.com" required>
+                                        <input type="email" name="client_email" class="form-control py-3 rounded-3 shadow-sm" placeholder="john@example.com" value="<%= locals.user ? user.email : '' %>" required>
                                     </div>
                                 </div>
                                 <div class="mb-5">

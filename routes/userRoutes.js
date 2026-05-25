@@ -64,17 +64,21 @@ router.post('/search', async (req, res) => {
 });
 
 router.get('/book/:trainerId', async (req, res) => {
+    if (!req.session.userId || req.session.userRole !== 'user') {
+        return res.redirect(`/user-login?error=${encodeURIComponent('Please login to book a trainer.')}&redirect=${encodeURIComponent(req.originalUrl)}`);
+    }
     try {
-        const [trainer, occupiedSlots] = await Promise.all([
+        const [trainer, occupiedSlots, user] = await Promise.all([
             Trainer.findById(req.params.trainerId),
-            Booking.getOccupiedSlots(req.params.trainerId)
+            Booking.getOccupiedSlots(req.params.trainerId),
+            User.findById(req.session.userId)
         ]);
         
         if (!trainer) return res.status(404).send("Trainer not found");
         
         res.render('book', { 
             trainer, 
-            user: req.session.userId ? { id: req.session.userId } : null,
+            user,
             occupiedSlots: JSON.stringify(occupiedSlots) // Pass as JSON for JS usage
         });
     } catch (err) {
@@ -84,6 +88,9 @@ router.get('/book/:trainerId', async (req, res) => {
 });
 
 router.post('/book/:trainerId', async (req, res) => {
+    if (!req.session.userId || req.session.userRole !== 'user') {
+        return res.redirect(`/user-login?error=${encodeURIComponent('Please login to book a trainer.')}&redirect=${encodeURIComponent('/book/' + req.params.trainerId)}`);
+    }
     try {
         const data = {
             client_name: req.body.client_name,
@@ -92,7 +99,7 @@ router.post('/book/:trainerId', async (req, res) => {
             booking_date: req.body.booking_date,
             amount: req.body.amount,
             trainer_id: req.params.trainerId,
-            user_id: req.session.userId || null,
+            user_id: req.session.userId,
             payment_method: req.body.payment_method || 'offline',
             payment_status: 'pending'
         };
@@ -135,12 +142,7 @@ router.post('/book/:trainerId', async (req, res) => {
             return res.redirect(`/payment/${bookingId}`);
         }
 
-        // Fix: Redirect guests to home page with success message instead of dashboard
-        if (req.session.userId) {
-            res.redirect('/dashboard?success=Booking successful!');
-        } else {
-            res.redirect('/?success=Booking successful!');
-        }
+        res.redirect('/dashboard?success=Booking successful!');
     } catch (err) {
         console.error(err);
         res.status(500).send("Error creating booking.");
@@ -150,34 +152,38 @@ router.post('/book/:trainerId', async (req, res) => {
 // ---------------- Auth Routes ----------------
 
 router.get('/user-login', (req, res) => {
-    res.render('user/login-modern');
+    res.render('user/login-modern', { redirect: req.query.redirect || '' });
 });
 
 router.post('/user/register', async (req, res) => {
     try {
         await User.create(req.body);
-        res.redirect('/user-login?success=Registration successful! Please login.');
+        const redirectParam = req.body.redirect ? `&redirect=${encodeURIComponent(req.body.redirect)}` : '';
+        res.redirect(`/user-login?success=Registration successful! Please login.${redirectParam}`);
     } catch (err) {
         console.error(err);
+        const redirectParam = req.body.redirect ? `&redirect=${encodeURIComponent(req.body.redirect)}` : '';
         if (err.code === '23505') {
-            res.redirect(req.header('Referer') || '/user-login?error=Email already registered! Please use a different email or login.');
+            res.redirect(req.header('Referer') || `/user-login?error=Email already registered! Please use a different email or login.${redirectParam}`);
         } else {
-            res.redirect(req.header('Referer') || '/user-login?error=Error during registration. Please try again later.');
+            res.redirect(req.header('Referer') || `/user-login?error=Error during registration. Please try again later.${redirectParam}`);
         }
     }
 });
 
 router.post('/user/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, redirect } = req.body;
 
         const user = await User.findByEmail(email);
         if (user && await User.comparePassword(password, user.password)) {
             req.session.userId = user.id;
             req.session.userRole = 'user';
-            res.redirect('/dashboard');
+            const redirectTo = redirect || '/dashboard';
+            res.redirect(redirectTo);
         } else {
-            res.redirect('/user-login?error=Invalid Credentials');
+            const redirectParam = redirect ? `&redirect=${encodeURIComponent(redirect)}` : '';
+            res.redirect(`/user-login?error=Invalid Credentials${redirectParam}`);
         }
     } catch (err) {
         console.error(err);
@@ -195,26 +201,32 @@ const passport = require('passport');
 
 router.get('/auth/google', (req, res, next) => {
     const role = req.query.role || 'user';
+    const redirect = req.query.redirect || '';
+    const state = redirect ? `${role}|${redirect}` : role;
     passport.authenticate('google', { 
         scope: ['profile', 'email'],
-        state: role // Pass the role in the state parameter
+        state: state // Pass the role and redirect in the state parameter
     })(req, res, next);
 });
 
 router.get('/auth/google/callback', 
     (req, res, next) => {
         passport.authenticate('google', (err, user, info) => {
+            const stateParam = req.query.state || 'user';
+            const [role, redirectTo] = stateParam.includes('|') ? stateParam.split('|') : [stateParam, ''];
+            
             if (err) {
                 console.error('❌ Passport Auth Error:', err);
-                return res.redirect(`/user-login?error=${encodeURIComponent('Google login failed: ' + err.message)}`);
+                const redirectParam = redirectTo ? `&redirect=${encodeURIComponent(redirectTo)}` : '';
+                return res.redirect(`/user-login?error=${encodeURIComponent('Google login failed: ' + err.message)}${redirectParam}`);
             }
             if (!user) {
                 console.warn('⚠️ Google Auth Warning: No user returned');
-                return res.redirect(`/user-login?error=${encodeURIComponent('Google authentication cancelled or failed.')}`);
+                const redirectParam = redirectTo ? `&redirect=${encodeURIComponent(redirectTo)}` : '';
+                return res.redirect(`/user-login?error=${encodeURIComponent('Google authentication cancelled or failed.')}${redirectParam}`);
             }
             
             // Log user in manually since we are using custom callback
-            const role = user.role || 'user';
             console.log(`✅ Google Login Success: ${user.email} as ${role}`);
             
             if (role === 'trainer') {
@@ -224,7 +236,7 @@ router.get('/auth/google/callback',
             } else {
                 req.session.userId = user.id;
                 req.session.userRole = 'user';
-                res.redirect('/dashboard?success=Logged in with Google');
+                res.redirect(redirectTo || '/dashboard?success=Logged in with Google');
             }
         })(req, res, next);
     }
@@ -448,8 +460,12 @@ router.get('/payment/:bookingId', async (req, res) => {
             return res.status(404).send("Booking not found");
         }
 
-        console.log('[DEBUG] Payment Access check passed for booking:', req.params.bookingId);
+        // Auth check: require logged in user and it must match booking.user_id
+        if (!req.session.userId || booking.user_id != req.session.userId) {
+            return res.redirect(`/user-login?error=${encodeURIComponent('Please login to access the payment page.')}&redirect=${encodeURIComponent(req.originalUrl)}`);
+        }
 
+        console.log('[DEBUG] Payment Access check passed for booking:', req.params.bookingId);
 
         const trainer = await Trainer.findById(booking.trainer_id);
         res.render('payment-upi', { booking, trainer });
@@ -466,14 +482,9 @@ router.post('/payment/:bookingId/confirm', async (req, res) => {
             return res.status(404).json({ success: false, error: 'Booking not found' });
         }
 
-        // Allow confirmation if it's a guest booking OR if it belongs to the logged-in user
-        if (booking.user_id) {
-            if (!req.session.userId) {
-                return res.status(401).json({ success: false, error: 'Authentication required' });
-            }
-            if (booking.user_id != req.session.userId) {
-                return res.status(403).json({ success: false, error: 'Unauthorized' });
-            }
+        // Enforce user ownership of the booking
+        if (!req.session.userId || booking.user_id != req.session.userId) {
+            return res.status(403).json({ success: false, error: 'Unauthorized' });
         }
 
         await Booking.updatePaymentStatus(req.params.bookingId, 'paid_pending');

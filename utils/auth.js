@@ -13,8 +13,9 @@ passport.use(new GoogleStrategy({
     try {
         // The role is passed in the 'state' parameter of the OAuth request
         // which Google returns in the query string of the callback
-        const role = req.query.state || 'user'; 
-        console.log(`[DEBUG] Google OAuth callback triggered. Role: ${role}, Email: ${profile.emails[0].value}`);
+        const stateParam = req.query.state || 'user';
+        const role = stateParam.includes('|') ? stateParam.split('|')[0] : stateParam;
+        console.log(`[DEBUG] Google OAuth callback triggered. Role: ${role}, State: ${stateParam}, Email: ${profile.emails[0].value}`);
         
         let account;
         if (role === 'trainer') {
