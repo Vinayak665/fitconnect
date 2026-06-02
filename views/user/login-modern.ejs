@@ -132,7 +132,10 @@
                     <input type="hidden" name="redirect" value="<%= redirect %>">
                 <% } %>
                 <h1>Create Account</h1>
-                <span>Register with your details</span>
+                <div class="social-icons">
+                    <a href="/auth/google?role=user&action=register" class="icon" title="Sign Up with Google"><i class="fa-brands fa-google"></i></a>
+                </div>
+                <span>or register with your details</span>
                 <input type="text" name="name" placeholder="Full Name" required>
                 <input type="email" name="email" placeholder="Email Address" required>
                 <div style="display:flex; gap:10px; width:100%;">
@@ -155,7 +158,7 @@
                 <% } %>
                 <h1>Sign In</h1>
                 <div class="social-icons">
-                    <a href="/auth/google?role=user<%= locals.redirect ? '&redirect=' + encodeURIComponent(redirect) : '' %>" class="icon" title="Login with Google"><i class="fa-brands fa-google"></i></a>
+                    <a href="/auth/google?role=user&action=login<%= locals.redirect ? '&redirect=' + encodeURIComponent(redirect) : '' %>" class="icon" title="Sign In with Google"><i class="fa-brands fa-google"></i></a>
                 </div>
                 <span>or use your email & password</span>
                 <input type="email" name="email" placeholder="Email" required>

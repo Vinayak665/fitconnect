@@ -134,6 +134,7 @@ class User {
         return true;
     }
 
+    // Used for REGISTRATION via Google — finds existing or creates new account
     static async findOrCreateByGoogle(profile) {
         const email = profile.emails[0].value;
         const googleId = profile.id;
@@ -176,6 +177,34 @@ class User {
             
         if (createError) throw createError;
         return newUser;
+    }
+
+    // Used for LOGIN via Google — only finds existing accounts, never creates
+    static async findByGoogle(profile) {
+        const email = profile.emails[0].value;
+        const googleId = profile.id;
+
+        let { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .or(`google_id.eq.${googleId},email.eq.${email}`)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (user) {
+            // Link google_id if user registered via email but now logging in with Google
+            if (!user.google_id) {
+                await supabase
+                    .from('users')
+                    .update({ google_id: googleId })
+                    .eq('id', user.id);
+            }
+            return user;
+        }
+
+        // Not registered — return null so caller can show an error
+        return null;
     }
 }
 

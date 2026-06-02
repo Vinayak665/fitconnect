@@ -200,43 +200,54 @@ router.get('/user/logout', (req, res) => {
 const passport = require('passport');
 
 router.get('/auth/google', (req, res, next) => {
-    const role = req.query.role || 'user';
+    const role     = req.query.role   || 'user';
+    const action   = req.query.action || 'login';   // 'login' or 'register'
     const redirect = req.query.redirect || '';
-    const state = redirect ? `${role}|${redirect}` : role;
+    // State format: "role|action|redirect"
+    const state = `${role}|${action}|${redirect}`;
     passport.authenticate('google', { 
         scope: ['profile', 'email'],
-        state: state // Pass the role and redirect in the state parameter
+        state
     })(req, res, next);
 });
 
 router.get('/auth/google/callback', 
     (req, res, next) => {
         passport.authenticate('google', (err, user, info) => {
+            // Parse state: "role|action|redirect"
             const stateParam = req.query.state || 'user';
-            const [role, redirectTo] = stateParam.includes('|') ? stateParam.split('|') : [stateParam, ''];
-            
+            const parts      = stateParam.split('|');
+            const role       = parts[0] || 'user';
+            const action     = parts[1] || 'login';
+            const redirectTo = parts[2] || '';
+
             if (err) {
                 console.error('❌ Passport Auth Error:', err);
                 const redirectParam = redirectTo ? `&redirect=${encodeURIComponent(redirectTo)}` : '';
                 return res.redirect(`/user-login?error=${encodeURIComponent('Google login failed: ' + err.message)}${redirectParam}`);
             }
+
             if (!user) {
-                console.warn('⚠️ Google Auth Warning: No user returned');
+                // user === false means the account was not found (login-only flow)
+                const msg = (info && info.message)
+                    ? info.message
+                    : 'Google authentication cancelled or failed.';
+                console.warn('⚠️ Google Auth: No user —', msg);
                 const redirectParam = redirectTo ? `&redirect=${encodeURIComponent(redirectTo)}` : '';
-                return res.redirect(`/user-login?error=${encodeURIComponent('Google authentication cancelled or failed.')}${redirectParam}`);
+                return res.redirect(`/user-login?error=${encodeURIComponent(msg)}${redirectParam}`);
             }
-            
-            // Log user in manually since we are using custom callback
-            console.log(`✅ Google Login Success: ${user.email} as ${role}`);
-            
+
+            console.log(`✅ Google ${action} Success: ${user.email} as ${role}`);
+
             if (role === 'trainer') {
                 req.session.trainerId = user.id;
-                req.session.userRole = 'trainer';
+                req.session.userRole  = 'trainer';
                 res.redirect('/trainer/dashboard?success=Logged in with Google');
             } else {
-                req.session.userId = user.id;
+                req.session.userId   = user.id;
                 req.session.userRole = 'user';
-                res.redirect(redirectTo || '/dashboard?success=Logged in with Google');
+                const successMsg = action === 'register' ? 'Account created and logged in!' : 'Logged in with Google';
+                res.redirect(redirectTo || `/dashboard?success=${encodeURIComponent(successMsg)}`);
             }
         })(req, res, next);
     }

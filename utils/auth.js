@@ -12,21 +12,28 @@ passport.use(new GoogleStrategy({
   },
   async (req, accessToken, refreshToken, profile, done) => {
     try {
-        // The role is passed in the 'state' parameter of the OAuth request
-        // which Google returns in the query string of the callback
+        // State format: "role|action|redirect"  e.g. "user|login|/dashboard"
         const stateParam = req.query.state || 'user';
-        const role = stateParam.includes('|') ? stateParam.split('|')[0] : stateParam;
-        console.log(`[DEBUG] Google OAuth callback triggered. Role: ${role}, State: ${stateParam}, Email: ${profile.emails[0].value}`);
-        
+        const parts = stateParam.split('|');
+        const role   = parts[0] || 'user';
+        const action = parts[1] || 'login';   // 'login' or 'register'
+
+        console.log(`[DEBUG] Google OAuth callback. Role: ${role}, Action: ${action}, Email: ${profile.emails[0].value}`);
+
         let account;
         if (role === 'trainer') {
+            // Trainers always find-or-create (they apply first, so register = first-time login)
             account = await Trainer.findOrCreateByGoogle(profile);
-        } else {
+        } else if (action === 'register') {
             account = await User.findOrCreateByGoogle(profile);
+        } else {
+            // Login-only: only find existing users, never auto-create
+            account = await User.findByGoogle(profile);
         }
-        
+
         if (!account) {
-            return done(new Error('Failed to find or create user account'), null);
+            // User tried to login via Google but is not registered yet
+            return done(null, false, { message: 'No account found with this Google email. Please register first.' });
         }
 
         return done(null, { ...account, role });
