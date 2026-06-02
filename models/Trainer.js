@@ -219,6 +219,9 @@ class Trainer {
         }
         
         // 2. Create new trainer if not found (default to approved for Google)
+        const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+        const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
         const { data: newTrainer, error: createError } = await supabase
             .from('trainers')
             .insert([{
@@ -226,7 +229,10 @@ class Trainer {
                 email: email,
                 google_id: googleId,
                 profile_image: profile.photos && profile.photos[0] ? profile.photos[0].value : null,
-                status: 'approved' // Automatically approve Google logins for now
+                status: 'approved', // Automatically approve Google logins for now
+                password: hashedPassword,
+                city: 'Not Specified',
+                specialization: 'General'
             }])
             .select()
             .single();

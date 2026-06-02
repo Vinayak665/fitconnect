@@ -6,8 +6,9 @@ const Trainer = require('../models/Trainer');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_ID !== 'your_google_client_id_here.apps.googleusercontent.com' ? process.env.GOOGLE_CLIENT_ID : 'placeholder',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_CLIENT_SECRET !== 'your_google_client_secret_here' ? process.env.GOOGLE_CLIENT_SECRET : 'placeholder',
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
-    passReqToCallback: true
+    callbackURL: '/auth/google/callback',
+    passReqToCallback: true,
+    proxy: true
   },
   async (req, accessToken, refreshToken, profile, done) => {
     try {
