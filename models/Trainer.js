@@ -240,6 +240,34 @@ class Trainer {
         if (createError) throw createError;
         return newTrainer;
     }
+
+    // Used for LOGIN via Google — only finds existing accounts, never creates
+    static async findByGoogle(profile) {
+        const email = profile.emails[0].value;
+        const googleId = profile.id;
+
+        let { data: trainer, error } = await supabase
+            .from('trainers')
+            .select('*')
+            .or(`google_id.eq.${googleId},email.eq.${email}`)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (trainer) {
+            // Link google_id if trainer registered via email but now logging in with Google
+            if (!trainer.google_id) {
+                await supabase
+                    .from('trainers')
+                    .update({ google_id: googleId })
+                    .eq('id', trainer.id);
+            }
+            return trainer;
+        }
+
+        // Not registered — return null so caller can show an error
+        return null;
+    }
 }
 
 module.exports = Trainer;

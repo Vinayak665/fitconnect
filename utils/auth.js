@@ -22,8 +22,12 @@ passport.use(new GoogleStrategy({
 
         let account;
         if (role === 'trainer') {
-            // Trainers always find-or-create (they apply first, so register = first-time login)
-            account = await Trainer.findOrCreateByGoogle(profile);
+            if (action === 'register') {
+                account = await Trainer.findOrCreateByGoogle(profile);
+            } else {
+                // Trainer login-only: only find existing trainers, never auto-create
+                account = await Trainer.findByGoogle(profile);
+            }
         } else if (action === 'register') {
             account = await User.findOrCreateByGoogle(profile);
         } else {

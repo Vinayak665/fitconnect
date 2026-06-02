@@ -221,10 +221,12 @@ router.get('/auth/google/callback',
             const action     = parts[1] || 'login';
             const redirectTo = parts[2] || '';
 
+            const loginUrl = role === 'trainer' ? '/trainer/login' : '/user-login';
+
             if (err) {
                 console.error('❌ Passport Auth Error:', err);
                 const redirectParam = redirectTo ? `&redirect=${encodeURIComponent(redirectTo)}` : '';
-                return res.redirect(`/user-login?error=${encodeURIComponent('Google login failed: ' + err.message)}${redirectParam}`);
+                return res.redirect(`${loginUrl}?error=${encodeURIComponent('Google login failed: ' + err.message)}${redirectParam}`);
             }
 
             if (!user) {
@@ -234,7 +236,7 @@ router.get('/auth/google/callback',
                     : 'Google authentication cancelled or failed.';
                 console.warn('⚠️ Google Auth: No user —', msg);
                 const redirectParam = redirectTo ? `&redirect=${encodeURIComponent(redirectTo)}` : '';
-                return res.redirect(`/user-login?error=${encodeURIComponent(msg)}${redirectParam}`);
+                return res.redirect(`${loginUrl}?error=${encodeURIComponent(msg)}${redirectParam}`);
             }
 
             console.log(`✅ Google ${action} Success: ${user.email} as ${role}`);
