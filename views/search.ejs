@@ -149,9 +149,29 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="/"><i class="fas fa-dumbbell me-2"></i>FitConnect</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars text-white"></i>
-            </button>
+            
+            <div class="d-flex align-items-center gap-3 order-lg-last">
+                <% if (typeof locals.session !== 'undefined' && locals.session.userId && locals.session.userRole === 'user') { %>
+                    <a class="btn btn-modern px-4" href="/dashboard">Dashboard</a>
+                    <a class="nav-link text-danger" href="/user/logout" style="display: inline-flex; align-items: center;"><i class="fas fa-sign-out-alt"></i></a>
+                <% } else if (typeof locals.session !== 'undefined' && locals.session.trainerId && locals.session.userRole === 'trainer') { %>
+                    <a class="btn btn-modern px-4" href="/trainer/dashboard">Dashboard</a>
+                    <a class="nav-link text-danger" href="/trainer/logout" style="display: inline-flex; align-items: center;"><i class="fas fa-sign-out-alt"></i></a>
+                <% } else if (typeof locals.session !== 'undefined' && locals.session.adminId && locals.session.userRole === 'admin') { %>
+                    <a class="btn btn-modern px-4" href="/admin/dashboard">Admin Panel</a>
+                    <a class="nav-link text-danger" href="/admin/logout" style="display: inline-flex; align-items: center;"><i class="fas fa-sign-out-alt"></i></a>
+                <% } else { %>
+                    <a href="/login" class="login-btn-aurora d-flex align-items-center gap-2" style="text-decoration:none;border:1px solid rgba(56,189,248,0.35);padding:8px 18px;border-radius:8px;color:#fff;font-weight:600;font-size:0.9rem;transition:all 0.2s;">
+                        <i class="fas fa-user" style="font-size:0.85rem;"></i>
+                        <span>Login</span>
+                    </a>
+                <% } %>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="fas fa-bars text-white"></i>
+                </button>
+            </div>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <!-- Theme Switcher -->
@@ -163,78 +183,7 @@
                         </button>
                     </li>
                     <li class="nav-item"><a class="nav-link fw-semibold active" href="/search">Find a Trainer</a></li>
-                    <li class="nav-item"><a class="nav-link fw-semibold" href="/trainer/login?mode=signup">Become a Trainer</a></li>
-                    
-                    <% if (typeof locals.session !== 'undefined' && locals.session.userId && locals.session.userRole === 'user') { %>
-                        <li class="nav-item ms-lg-3">
-                            <a class="btn btn-modern px-4" href="/dashboard">Dashboard</a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            <a class="nav-link text-danger" href="/user/logout"><i class="fas fa-sign-out-alt"></i></a>
-                        </li>
-                    <% } else if (typeof locals.session !== 'undefined' && locals.session.trainerId && locals.session.userRole === 'trainer') { %>
-                        <li class="nav-item ms-lg-3">
-                            <a class="btn btn-modern px-4" href="/trainer/dashboard">Dashboard</a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            <a class="nav-link text-danger" href="/trainer/logout"><i class="fas fa-sign-out-alt"></i></a>
-                        </li>
-                    <% } else if (typeof locals.session !== 'undefined' && locals.session.adminId && locals.session.userRole === 'admin') { %>
-                        <li class="nav-item ms-lg-3">
-                            <a class="btn btn-modern px-4" href="/admin/dashboard">Admin Panel</a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            <a class="nav-link text-danger" href="/admin/logout"><i class="fas fa-sign-out-alt"></i></a>
-                        </li>
-                    <% } else { %>
-                        <li class="nav-item dropdown ms-lg-3">
-                             <button class="login-btn-aurora d-flex align-items-center gap-2"
-                                 id="loginDropdown" type="button"
-                                 onclick="toggleAuroraDropdown(event)"
-                                 style="text-decoration:none;background:none;border:1px solid rgba(56,189,248,0.35);cursor:pointer;">
-                                 <i class="fas fa-user-circle" style="font-size:1rem;"></i>
-                                 <span>Login</span>
-                                 <i class="fas fa-chevron-down" id="loginChevron" style="font-size:0.65rem;transition:transform 0.22s;"></i>
-                             </button>
-                            <ul class="dropdown-menu aurora-dropdown dropdown-menu-end" id="auroraMenu" aria-labelledby="loginDropdown">
-                                <li><div class="aurora-dropdown-label">Choose your role</div></li>
-                                <li>
-                                    <a class="aurora-dropdown-item" href="/user-login">
-                                        <span class="item-icon" style="background:rgba(56,189,248,0.15);color:#38bdf8;">
-                                            <i class="fas fa-user"></i>
-                                        </span>
-                                        <div>
-                                            <div style="font-size:0.88rem;font-weight:700;">User Login</div>
-                                            <div style="font-size:0.72rem;color:#64748b;font-weight:500;">Book & manage sessions</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="aurora-dropdown-item" href="/trainer/login?mode=signup">
-                                        <span class="item-icon" style="background:rgba(74,222,128,0.15);color:#4ade80;">
-                                            <i class="fas fa-dumbbell"></i>
-                                        </span>
-                                        <div>
-                                            <div style="font-size:0.88rem;font-weight:700;">Trainer Login</div>
-                                            <div style="font-size:0.72rem;color:#64748b;font-weight:500;">Manage your clients</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li><div class="aurora-divider"></div></li>
-                                <li>
-                                    <a class="aurora-dropdown-item" href="/admin/login">
-                                        <span class="item-icon" style="background:rgba(251,113,133,0.15);color:#fb7185;">
-                                            <i class="fas fa-shield-alt"></i>
-                                        </span>
-                                        <div>
-                                            <div style="font-size:0.88rem;font-weight:700;">Admin Login</div>
-                                            <div style="font-size:0.72rem;color:#64748b;font-weight:500;">Platform administration</div>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    <% } %>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="/trainer/login?mode=signup">Join as a Trainer</a></li>
                 </ul>
             </div>
         </div>
@@ -475,7 +424,7 @@
 
         const HoverFooter = () => {
             const footerLinks = [
-                { title: "Quick Links", links: [{ label: "Find a Trainer", href: "/search" }, { label: "Become a Trainer", href: "/trainer/login?mode=signup" }, { label: "User Login", href: "/user-login" }] }
+                { title: "Quick Links", links: [{ label: "Find a Trainer", href: "/search" }, { label: "Become a Trainer", href: "/trainer/login?mode=signup" }, { label: "Login", href: "/login" }] }
             ];
             const contactInfo = [
                 { icon: <i className="fas fa-user text-[#3ca2fa]"></i>, text: "Owner: Vinayak Babani" },
@@ -550,16 +499,6 @@
             document.querySelectorAll('.animate-fade-up').forEach(el => observer.observe(el));
         });
 
-        // Custom aurora dropdown toggle
-        function toggleAuroraDropdown(e) {
-            e.stopPropagation();
-            const menu = document.getElementById('auroraMenu');
-            const chevron = document.getElementById('loginChevron');
-            const isOpen = menu.classList.contains('open');
-            menu.classList.toggle('open', !isOpen);
-            if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-        }
-
         // Custom specialization dropdown
         function toggleSpecDropdown(e) {
             e.preventDefault();
@@ -568,14 +507,6 @@
             const chevron = document.getElementById('specChevron');
             const btn = document.getElementById('specializationDropdownBtn');
             const isOpen = menu.classList.contains('open');
-            
-            // Close other dropdowns
-            const auroraMenu = document.getElementById('auroraMenu');
-            if(auroraMenu && auroraMenu.classList.contains('open')) {
-                auroraMenu.classList.remove('open');
-                const loginChevron = document.getElementById('loginChevron');
-                if(loginChevron) loginChevron.style.transform = '';
-            }
 
             menu.classList.toggle('open', !isOpen);
             btn.classList.toggle('focused', !isOpen);
@@ -603,15 +534,6 @@
 
         // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
-            const menu = document.getElementById('auroraMenu');
-            const btn = document.getElementById('loginDropdown');
-            const chevron = document.getElementById('loginChevron');
-            if (menu && menu.classList.contains('open') &&
-                !menu.contains(e.target) && btn && !btn.contains(e.target)) {
-                menu.classList.remove('open');
-                if (chevron) chevron.style.transform = '';
-            }
-            
             // For specialization dropdown
             const specMenu = document.getElementById('specMenu');
             const specBtn = document.getElementById('specializationDropdownBtn');

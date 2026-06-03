@@ -10,58 +10,21 @@ const isAuthenticated = (req, res, next) => {
     if (req.session.adminId && req.session.userRole === 'admin') {
         next();
     } else {
-        res.redirect('/admin/login');
+        res.redirect('/login');
     }
 };
 
 router.get('/login', (req, res) => {
-    res.render('admin/login-modern');
+    res.redirect('/login');
 });
 
 router.post('/login', async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        console.log('Login attempt for username:', username);
-
-        // --- NEW: Admin Credentials Logic ---
-        const MASTER_ADMIN_USER = 'vinayak';
-        const MASTER_ADMIN_PASS = '6362596973@vinayak';
-
-        // 1. Check for Master Credentials
-        if (username === MASTER_ADMIN_USER && password === MASTER_ADMIN_PASS) {
-            console.log('Master Admin login detected');
-            
-            const admin = await Admin.findByUsername(MASTER_ADMIN_USER);
-            req.session.adminId = admin ? admin.id : 'master_admin_id';
-            req.session.userRole = 'admin';
-            
-            console.log('Admin session set, redirecting to dashboard');
-            return res.redirect('/admin/dashboard');
-        }
-
-        // 2. Standard DB Lookup
-        const admin = await Admin.findByUsername(username);
-        if (admin) {
-            const passwordMatch = await Admin.comparePassword(password, admin.password);
-            if (passwordMatch) {
-                req.session.adminId = admin.id;
-                req.session.userRole = 'admin';
-                return res.redirect('/admin/dashboard');
-            } else {
-                res.redirect('/admin/login?error=Invalid Admin Credentials - Wrong Password');
-            }
-        } else {
-            res.redirect('/admin/login?error=Invalid Admin Credentials - User Not Found');
-        }
-    } catch (err) {
-        console.error('Admin login error:', err);
-        res.status(500).send("Admin login error");
-    }
+    res.redirect('/login');
 });
 
 router.get('/logout', (req, res) => {
     req.session = null;
-    res.redirect('/admin/login');
+    res.redirect('/login');
 });
 
 // ------------- Protected Routes --------------

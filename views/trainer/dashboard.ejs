@@ -398,7 +398,7 @@
 
                         <!-- Completed Section -->
                         <div id="completed-section" class="dashboard-section d-none">
-                            <h2 class="fw-bold mb-4" style="color: #1e293b;">Completed Sessions</h2>
+                            <h2 class="fw-bold mb-4" style="color: #f8fafc;">Completed Sessions</h2>
                             
                             <div class="card glass-panel rounded-4 border-0">
                                 <div class="card-header bg-transparent py-4 border-bottom border-secondary border-opacity-25 d-flex align-items-center">
@@ -641,22 +641,12 @@
                                                     </div>
                                                     <div class="col-md-12 mt-4">
                                                         <div class="row g-4">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-12">
                                                                 <label class="form-label fw-bold text-uppercase small opacity-75 ms-1">UPI ID for Payments</label>
                                                                 <div class="input-group">
                                                                     <span class="input-group-text px-4 border-end-0"><i class="fas fa-mobile-alt text-info"></i></span>
                                                                     <input type="text" name="upi_id" class="form-control py-3 px-3 border-start-0" value="<%= trainer.upi_id %>" placeholder="username@upi">
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <label class="form-label fw-bold text-uppercase small opacity-75 ms-1">Payment QR Code</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text px-4 border-end-0"><i class="fas fa-qrcode text-info"></i></span>
-                                                                    <input type="file" name="qr_code" class="form-control py-3 px-3 border-start-0" accept="image/*">
-                                                                </div>
-                                                                <% if(trainer.qr_code) { %>
-                                                                    <small class="text-success d-block mt-1 ms-1"><i class="fas fa-check-circle"></i> Current QR Code uploaded</small>
-                                                                <% } %>
                                                             </div>
                                                         </div>
                                                     </div>

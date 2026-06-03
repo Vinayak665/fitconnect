@@ -427,15 +427,26 @@
 
                                         const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-                                        // Generate time slots 9:00 AM to 6:00 PM (15-min intervals)
+                                        // Generate time slots 5:00 AM to 11:00 PM (15-min intervals)
                                         const timeSlots = [];
-                                        for (let i = 0; i <= 36; i++) {
+                                        for (let i = 0; i <= 72; i++) {
                                             const totalMin = i * 15;
-                                            const h = Math.floor(totalMin / 60) + 9;
+                                            const h = Math.floor(totalMin / 60) + 5;
                                             const m = totalMin % 60;
                                             timeSlots.push(
                                                 String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0')
                                             );
+                                        }
+
+                                        function formatTime12Hour(t) {
+                                            if (!t) return '';
+                                            const parts = t.split(':');
+                                            let h = parseInt(parts[0], 10);
+                                            const m = parts[1];
+                                            const ampm = h >= 12 ? 'PM' : 'AM';
+                                            h = h % 12;
+                                            h = h ? h : 12;
+                                            return h + ':' + m + ' ' + ampm;
                                         }
 
                                         // Function to update time slot availability
@@ -483,7 +494,7 @@
                                         timeSlots.forEach(function(t) {
                                             const el = document.createElement('div');
                                             el.className = 'time-slot';
-                                            el.textContent = t;
+                                            el.textContent = formatTime12Hour(t);
                                             el.dataset.time = t;
                                             el.addEventListener('click', function() {
                                                 if (el.classList.contains('disabled')) return;
@@ -553,7 +564,7 @@
 
                                                 const displayDate = selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                                                 footerLabel.textContent = 'Session booked for';
-                                                footer.innerHTML = '<span>' + displayDate + '</span> at <span>' + selectedTime + '</span>';
+                                                footer.innerHTML = '<span>' + displayDate + '</span> at <span>' + formatTime12Hour(selectedTime) + '</span>';
                                                 badge.style.removeProperty('display');
                                                 document.getElementById('booking_date_feedback').classList.add('d-none');
                                             } else if (selectedDate) {
@@ -616,7 +627,7 @@
                                             var confirmBtn = document.getElementById('confirm-dt-btn');
                                             if (selectedDate && selectedTime) {
                                                 var d = selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                                                label.textContent = d + ' at ' + selectedTime;
+                                                label.textContent = d + ' at ' + formatTime12Hour(selectedTime);
                                                 btn.classList.add('selected-state');
                                                 btn.querySelector('i').className = 'fas fa-check-circle';
                                                 // Show confirm button

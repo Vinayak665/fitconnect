@@ -1,5 +1,5 @@
 require('dotenv').config();
-// Server Restart Triggered: 2026-04-11 (Clear Test Data)
+
 const express = require('express');
 const path = require('path');
 const session = require('cookie-session');
@@ -52,24 +52,17 @@ app.use((req, res, next) => {
     next();
 });
 
+// Prevent browser from caching dynamic HTML to avoid outdated DOM on back-button navigation
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    next();
+});
+
 // View Engine Setup with caching
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('view cache', process.env.NODE_ENV === 'production'); // Enable cache in production
 
-// Debug route - shows env var status (REMOVE AFTER FIXING)
-app.get('/debug', (req, res) => {
-    res.json({
-        node_env: process.env.NODE_ENV,
-        has_supabase_url: !!process.env.SUPABASE_URL,
-        has_supabase_key: !!process.env.SUPABASE_KEY,
-        has_session_secret: !!process.env.SESSION_SECRET,
-        has_email_user: !!process.env.EMAIL_USER,
-        has_email_pass: !!process.env.EMAIL_PASS,
-        node_version: process.version,
-        platform: process.platform
-    });
-});
 
 // Routes Setup
 const userRoutes = require('./routes/userRoutes');

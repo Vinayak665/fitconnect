@@ -97,7 +97,8 @@ class Booking {
             .from('bookings')
             .select('booking_date')
             .eq('trainer_id', trainerId)
-            .neq('status', 'rejected');
+            .neq('status', 'rejected')
+            .neq('status', 'done');
             
         if (error) throw error;
         // Return as array of ISO strings

@@ -5,7 +5,6 @@ const Booking = require('../models/Booking');
 const multer = require('multer');
 const path = require('path');
 const { sendBookingStatusEmail } = require('../utils/mailer');
-const fs = require('fs');
 const supabase = require('../database'); // Added this
 const { cache } = require('../utils/cache'); 
 const { uploadToSupabase } = require('../utils/supabaseStorage');
@@ -206,22 +205,16 @@ router.get('/profile', isAuthenticated, (req, res) => {
 });
 
 router.post('/profile', isAuthenticated, upload.any(), async (req, res) => {
-    console.log('[DEBUG] Trainer Profile Update Request');
-    console.log('[DEBUG] Session Trainer ID:', req.session.trainerId);
-    console.log('[DEBUG] Received fields:', JSON.stringify(req.body, null, 2));
-    console.log('[DEBUG] Received files:', req.files ? req.files.map(f => ({ fieldname: f.fieldname, size: f.size })) : 'None');
+    console.log('[INFO] Trainer Profile Update:', req.session.trainerId);
     try {
         const trainer = await Trainer.findById(req.session.trainerId);
-        console.log(`[DEBUG] Updating profile for trainer: ${req.session.trainerId}`);
         
         let profileImageUrl = trainer.profile_image;
         const profileImageFile = req.files ? req.files.find(f => f.fieldname === 'profile_image') : null;
         
         if (profileImageFile) {
-            console.log(`[DEBUG] New profile image detected: ${profileImageFile.originalname}`);
             const newUrl = await uploadToSupabase(profileImageFile.buffer, profileImageFile.originalname, profileImageFile.mimetype);
             if (newUrl) {
-                console.log(`[DEBUG] Successfully uploaded profile image: ${newUrl}`);
                 profileImageUrl = newUrl;
             } else {
                 console.error(`[ERROR] Failed to upload profile image for trainer ${req.session.trainerId}`);
@@ -229,31 +222,17 @@ router.post('/profile', isAuthenticated, upload.any(), async (req, res) => {
             }
         }
 
-        let qrCodeUrl = trainer.qr_code;
-        const qrCodeFile = req.files ? req.files.find(f => f.fieldname === 'qr_code') : null;
-        if (qrCodeFile) {
-            console.log(`[DEBUG] New QR code detected: ${qrCodeFile.originalname}`);
-            const newUrl = await uploadToSupabase(qrCodeFile.buffer, qrCodeFile.originalname, qrCodeFile.mimetype);
-            if (newUrl) {
-                console.log(`[DEBUG] Successfully uploaded QR code: ${newUrl}`);
-                qrCodeUrl = newUrl;
-            } else {
-                console.error(`[ERROR] Failed to upload QR code for trainer ${req.session.trainerId}`);
-                return res.redirect('/trainer/dashboard?error=storage_policy');
-            }
-        }
-
         const data = {
             ...req.body,
             profile_image: profileImageUrl,
-            qr_code: qrCodeUrl,
+            qr_code: null,
             upi_id: req.body.upi_id
         };
         
         // Handle new certifications
         const certFiles = req.files ? req.files.filter(f => f.fieldname === 'certifications') : [];
         if (certFiles.length > 0) {
-            console.log(`[DEBUG] ${certFiles.length} new certifications detected`);
+            console.log(`[INFO] ${certFiles.length} new certifications uploaded.`);
             const newCertUrls = [];
             for (const file of certFiles) {
                 const url = await uploadToSupabase(file.buffer, file.originalname, file.mimetype);
@@ -270,7 +249,7 @@ router.post('/profile', isAuthenticated, upload.any(), async (req, res) => {
         // Clear all relevant caches
         if (cache && typeof cache.clear === 'function') cache.clear();
         
-        console.log(`[SUCCESS] Trainer profile updated for ID: ${req.session.trainerId}`);
+        console.log(`[INFO] Trainer profile updated: ${req.session.trainerId}`);
         res.redirect('/trainer/dashboard?success=profile_updated');
     } catch (err) {
         console.error('❌ Profile Update Error:', err);

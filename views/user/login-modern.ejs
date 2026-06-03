@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitConnect - User Login & Register</title>
+    <title>FitConnect - Login & Register</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <%- include('../partials/theme-logic') %>
     <style>
@@ -152,7 +152,7 @@
 
         <!-- Sign In Form -->
         <div class="form-container sign-in">
-            <form action="/user/login" method="POST">
+            <form action="/login" method="POST">
                 <% if (locals.redirect) { %>
                     <input type="hidden" name="redirect" value="<%= redirect %>">
                 <% } %>
@@ -160,8 +160,8 @@
                 <div class="social-icons">
                     <a href="/auth/google?role=user&action=login<%= locals.redirect ? '&redirect=' + encodeURIComponent(redirect) : '' %>" class="icon" title="Sign In with Google"><i class="fa-brands fa-google"></i></a>
                 </div>
-                <span>or use your email & password</span>
-                <input type="email" name="email" placeholder="Email" required>
+                <span>or use your credentials</span>
+                <input type="text" name="email" placeholder="Email or Username" required>
                 <div class="password-wrapper">
                     <input type="password" name="password" id="loginPassword" placeholder="Password" required>
                     <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('loginPassword', this)"></i>

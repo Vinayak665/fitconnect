@@ -3,9 +3,11 @@ const router = express.Router();
 const User = require('../models/User');
 const Trainer = require('../models/Trainer');
 const Booking = require('../models/Booking');
+const Admin = require('../models/Admin');
 const multer = require('multer');
 const path = require('path');
 const { sendEmail } = require('../utils/mailer');
+const supabase = require('../database');
 
 // Configure Multer - use memoryStorage for Vercel (read-only filesystem)
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
@@ -18,7 +20,7 @@ const isAuthenticated = (req, res, next) => {
     if (req.session.userId && req.session.userRole === 'user') {
         next();
     } else {
-        res.redirect('/user-login');
+        res.redirect('/login');
     }
 };
 
@@ -65,7 +67,7 @@ router.post('/search', async (req, res) => {
 
 router.get('/book/:trainerId', async (req, res) => {
     if (!req.session.userId || req.session.userRole !== 'user') {
-        return res.redirect(`/user-login?error=${encodeURIComponent('Please login to book a trainer.')}&redirect=${encodeURIComponent(req.originalUrl)}`);
+        return res.redirect(`/login?error=${encodeURIComponent('Please login to book a trainer.')}&redirect=${encodeURIComponent(req.originalUrl)}`);
     }
     try {
         const [trainer, occupiedSlots, user] = await Promise.all([
@@ -89,7 +91,7 @@ router.get('/book/:trainerId', async (req, res) => {
 
 router.post('/book/:trainerId', async (req, res) => {
     if (!req.session.userId || req.session.userRole !== 'user') {
-        return res.redirect(`/user-login?error=${encodeURIComponent('Please login to book a trainer.')}&redirect=${encodeURIComponent('/book/' + req.params.trainerId)}`);
+        return res.redirect(`/login?error=${encodeURIComponent('Please login to book a trainer.')}&redirect=${encodeURIComponent('/book/' + req.params.trainerId)}`);
     }
     try {
         const data = {
@@ -151,40 +153,71 @@ router.post('/book/:trainerId', async (req, res) => {
 
 // ---------------- Auth Routes ----------------
 
-router.get('/user-login', (req, res) => {
+// Unified login page (also handles admin login)
+router.get('/login', (req, res) => {
     res.render('user/login-modern', { redirect: req.query.redirect || '' });
+});
+
+// Legacy redirect - old /user-login links still work
+router.get('/user-login', (req, res) => {
+    const qs = new URLSearchParams(req.query).toString();
+    res.redirect('/login' + (qs ? '?' + qs : ''));
 });
 
 router.post('/user/register', async (req, res) => {
     try {
         await User.create(req.body);
         const redirectParam = req.body.redirect ? `&redirect=${encodeURIComponent(req.body.redirect)}` : '';
-        res.redirect(`/user-login?success=Registration successful! Please login.${redirectParam}`);
+        res.redirect(`/login?success=Registration successful! Please login.${redirectParam}`);
     } catch (err) {
         console.error(err);
         const redirectParam = req.body.redirect ? `&redirect=${encodeURIComponent(req.body.redirect)}` : '';
         if (err.code === '23505') {
-            res.redirect(req.header('Referer') || `/user-login?error=Email already registered! Please use a different email or login.${redirectParam}`);
+            res.redirect(req.header('Referer') || `/login?error=Email already registered! Please use a different email or login.${redirectParam}`);
         } else {
-            res.redirect(req.header('Referer') || `/user-login?error=Error during registration. Please try again later.${redirectParam}`);
+            res.redirect(req.header('Referer') || `/login?error=Error during registration. Please try again later.${redirectParam}`);
         }
     }
 });
 
-router.post('/user/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     try {
         const { email, password, redirect } = req.body;
+        const redirectParam = redirect ? `&redirect=${encodeURIComponent(redirect)}` : '';
 
+        // 1. Check for Admin
+        const MASTER_ADMIN_USER = 'vinayak';
+        const MASTER_ADMIN_PASS = '6362596973@vinayak';
+
+        if (email === MASTER_ADMIN_USER && password === MASTER_ADMIN_PASS) {
+            console.log('Master Admin login detected via unified login');
+            const admin = await Admin.findByUsername(MASTER_ADMIN_USER);
+            req.session.adminId = admin ? admin.id : 'master_admin_id';
+            req.session.userRole = 'admin';
+            return res.redirect('/admin/dashboard');
+        }
+
+        const admin = await Admin.findByUsername(email);
+        if (admin) {
+            const passwordMatch = await Admin.comparePassword(password, admin.password);
+            if (passwordMatch) {
+                req.session.adminId = admin.id;
+                req.session.userRole = 'admin';
+                return res.redirect('/admin/dashboard');
+            }
+        }
+
+        // 2. Check for User
         const user = await User.findByEmail(email);
         if (user && await User.comparePassword(password, user.password)) {
             req.session.userId = user.id;
             req.session.userRole = 'user';
             const redirectTo = redirect || '/dashboard';
-            res.redirect(redirectTo);
-        } else {
-            const redirectParam = redirect ? `&redirect=${encodeURIComponent(redirect)}` : '';
-            res.redirect(`/user-login?error=Invalid Credentials${redirectParam}`);
+            return res.redirect(redirectTo);
         }
+
+        // If neither matches
+        res.redirect(`/login?error=Invalid Credentials${redirectParam}`);
     } catch (err) {
         console.error(err);
         res.status(500).send("Error during login.");
@@ -207,7 +240,8 @@ router.get('/auth/google', (req, res, next) => {
     const state = `${role}|${action}|${redirect}`;
     passport.authenticate('google', { 
         scope: ['profile', 'email'],
-        state
+        state,
+        prompt: 'select_account'
     })(req, res, next);
 });
 
@@ -221,7 +255,7 @@ router.get('/auth/google/callback',
             const action     = parts[1] || 'login';
             const redirectTo = parts[2] || '';
 
-            const loginUrl = role === 'trainer' ? '/trainer/login' : '/user-login';
+            const loginUrl = role === 'trainer' ? '/trainer/login' : '/login';
 
             if (err) {
                 console.error('❌ Passport Auth Error:', err);
@@ -391,7 +425,7 @@ router.post('/reset-password', async (req, res) => {
         delete req.session.resetUserId;
         delete req.session.otpVerified;
 
-        const loginUrl = resetRole === 'trainer' ? '/trainer/login' : '/user-login';
+        const loginUrl = resetRole === 'trainer' ? '/trainer/login' : '/login';
         res.redirect(`${loginUrl}?success=Password updated successfully! Please login with your new password.`);
     } catch (err) {
         console.error(err);
@@ -406,14 +440,7 @@ router.get('/dashboard', isAuthenticated, async (req, res) => {
         const cacheKey = `user_dashboard_${req.session.userId}`;
         let cachedData = getCachedData(cacheKey);
         
-        // Force fresh data to troubleshoot visibility issues
-        if (true) {
-            const [user, bookings] = await Promise.all([
-                User.findById(req.session.userId),
-                Booking.findByUserId(req.session.userId)
-            ]);
-            cachedData = { user, bookings };
-        } else if (!cachedData) {
+        if (!cachedData) {
             const [user, bookings] = await Promise.all([
                 User.findById(req.session.userId),
                 Booking.findByUserId(req.session.userId)
@@ -452,10 +479,7 @@ router.post('/edit-profile', isAuthenticated, upload.single('profile_image'), as
                 return res.redirect('/dashboard?error=storage_policy');
             }
         }
-        console.log('[DEBUG] User Profile Update Request');
-        console.log('[DEBUG] Session User ID:', req.session.userId);
-        console.log('[DEBUG] Received fields:', JSON.stringify(req.body, null, 2));
-        if (req.file) console.log('[DEBUG] Received file:', req.file.fieldname, req.file.size);
+        console.log('[INFO] User Profile Update:', req.session.userId);
 
         await User.updateProfile(req.session.userId, userData);
         cache.delete(`user_dashboard_${req.session.userId}`);
@@ -475,7 +499,7 @@ router.get('/payment/:bookingId', async (req, res) => {
 
         // Auth check: require logged in user and it must match booking.user_id
         if (!req.session.userId || booking.user_id != req.session.userId) {
-            return res.redirect(`/user-login?error=${encodeURIComponent('Please login to access the payment page.')}&redirect=${encodeURIComponent(req.originalUrl)}`);
+            return res.redirect(`/login?error=${encodeURIComponent('Please login to access the payment page.')}&redirect=${encodeURIComponent(req.originalUrl)}`);
         }
 
         console.log('[DEBUG] Payment Access check passed for booking:', req.params.bookingId);
@@ -510,6 +534,46 @@ router.post('/payment/:bookingId/confirm', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+router.post('/booking/:id/reschedule', isAuthenticated, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { new_booking_date } = req.body;
+        
+        // Fetch booking to verify ownership
+        const booking = await Booking.findById(id);
+        if (!booking || booking.user_id != req.session.userId) {
+            return res.status(403).send("Unauthorized");
+        }
+        
+        // Normalize input date to UTC if needed
+        let normalizedDate = new_booking_date;
+        if (!normalizedDate.includes('Z') && !normalizedDate.includes('+')) {
+            normalizedDate += ':00Z';
+        }
+
+        // Update the booking: update booking_date, set status to 'pending', clear suggestion
+        const { error } = await supabase
+            .from('bookings')
+            .update({
+                booking_date: normalizedDate,
+                status: 'pending',
+                trainer_suggestion: null,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', id);
+
+        if (error) throw error;
+
+        // Invalidate cache
+        cache.delete(`user_dashboard_${req.session.userId}`);
+
+        res.redirect('/dashboard?success=Rescheduled successfully! Awaiting trainer approval.');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error rescheduling booking.");
     }
 });
 

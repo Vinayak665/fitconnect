@@ -276,16 +276,6 @@
                                                                         <small class="text-muted d-block mb-1">UPI ID</small>
                                                                         <div class="fw-bold text-white"><%= trainer.upi_id || 'Not Provided' %></div>
                                                                     </div>
-                                                                    <div>
-                                                                        <small class="text-muted d-block mb-2">QR Code</small>
-                                                                        <% if(trainer.qr_code) { %>
-                                                                            <a href="<%= trainer.qr_code %>" target="_blank" class="d-block">
-                                                                                <img src="<%= trainer.qr_code %>" class="img-fluid rounded border border-secondary border-opacity-50" style="max-width: 150px;" alt="QR Code">
-                                                                            </a>
-                                                                        <% } else { %>
-                                                                            <div class="text-muted small italic">No QR Code uploaded</div>
-                                                                        <% } %>
-                                                                    </div>
                                                                 </div>
                                                                 <!-- Certificates -->
                                                                 <div class="col-md-8">
