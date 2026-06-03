@@ -104,7 +104,42 @@ async function sendBookingStatusEmail(clientEmail, trainerName, status, bookingD
     });
 }
 
+async function sendTrainerApprovalEmail(trainerEmail, trainerName, loginUrl) {
+    const html = `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e5e7eb; border-radius: 16px; background-color: #ffffff;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #0ea5e9; margin: 0;">FitConnect</h1>
+                <p style="color: #6b7280; font-size: 14px;">Your Fitness Journey, Simplified</p>
+            </div>
+            
+            <h2 style="color: #111827; font-size: 20px; text-align: center;">Application Approved! 🎉</h2>
+            
+            <p style="color: #4b5563; line-height: 1.6;">Hello <strong>${trainerName}</strong>,</p>
+            <p style="color: #4b5563; line-height: 1.6;">Congratulations! Your application to become a verified FitConnect trainer has been reviewed and <strong>APPROVED</strong> by our admin team.</p>
+            
+            <p style="color: #4b5563; line-height: 1.6;">You can now log in to the trainer portal to set up your profile, manage client bookings, and track your training sessions.</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${loginUrl}" style="background: linear-gradient(135deg, #0ea5e9, #6366f1); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);">Go to Trainer Portal</a>
+            </div>
+            
+            <p style="color: #4b5563; line-height: 1.6;">Welcome to the team!</p>
+            
+            <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #f3f4f6;">
+                <p style="color: #9ca3af; font-size: 12px;">&copy; ${new Date().getFullYear()} FitConnect. All rights reserved.</p>
+            </div>
+        </div>
+    `;
+
+    return sendEmail({
+        to: trainerEmail,
+        subject: '🎉 FitConnect Trainer Application Approved!',
+        html
+    });
+}
+
 module.exports = {
     sendEmail,
-    sendBookingStatusEmail
+    sendBookingStatusEmail,
+    sendTrainerApprovalEmail
 };
