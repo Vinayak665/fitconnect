@@ -36,17 +36,18 @@ class Booking {
         // Fetch bookings and join with trainers - optimized query
         const { data, error } = await supabase
             .from('bookings')
-            .select('id, client_name, client_phone, client_email, booking_date, amount, status, trainer_suggestion, created_at, payment_method, payment_status, trainers!inner(name)')
+            .select('id, client_name, client_phone, client_email, booking_date, amount, status, trainer_suggestion, created_at, payment_method, payment_status, trainers!inner(name, contact_number)')
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
             .limit(20); // Limit for performance
             
         if (error) throw error;
         
-        // Map data to match old sqlite flat structure (trainer_name)
+        // Map data to match old sqlite flat structure (trainer_name, trainer_phone)
         return data.map(b => ({
             ...b,
-            trainer_name: b.trainers.name
+            trainer_name: b.trainers.name,
+            trainer_phone: b.trainers.contact_number
         }));
     }
 
