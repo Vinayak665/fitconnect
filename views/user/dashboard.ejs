@@ -104,7 +104,7 @@
                     <div class="mb-2 px-3 text-uppercase small fw-bold" style="opacity: 0.5; color: #fff;">Menu</div>
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100">
                         <li class="nav-item w-100"><a href="javascript:void(0)" onclick="showSection('overview')" id="nav-overview" class="active"><i class="fas fa-home me-2"></i> <span class="d-none d-sm-inline">Dashboard</span></a></li>
-                        <li class="nav-item w-100"><a href="javascript:void(0)" onclick="showSection('chats')" id="nav-chats"><i class="fas fa-comments me-2"></i> <span class="d-none d-sm-inline">Messages</span></a></li>
+
                         <li class="nav-item w-100"><a href="/search"><i class="fas fa-search me-2"></i> <span class="d-none d-sm-inline">Find Trainers</span></a></li>
                         <li class="nav-item w-100"><a href="/edit-profile"><i class="fas fa-user-edit me-2"></i> <span class="d-none d-sm-inline">Edit Profile</span></a></li>
                     </ul>
@@ -276,89 +276,7 @@
                     </div>
                 </div>
                     
-                <!-- Chats Section -->
-                <div id="chats-section" class="dashboard-section d-none">
-                    <div class="chat-container shadow-lg">
-                        <div class="row h-100 m-0">
-                            <% 
-                                let chatBookings = [];
-                                if(bookings) { 
-                                    chatBookings = bookings.filter(b => b.status === 'approved' || b.status === 'confirmed' || b.status === 'done');
-                                }
-                            %>
-                            
-                            <!-- Left Col: Conversation List -->
-                            <div class="col-12 col-md-5 col-lg-4 chat-list-col py-3 px-0">
-                                <div class="px-3 pb-3 border-bottom border-secondary border-opacity-25 mb-2">
-                                    <h4 class="fw-bold text-white mb-0 mt-2"><i class="fas fa-comments text-primary me-2"></i> Messages</h4>
-                                </div>
-                                <% if(chatBookings.length > 0) { %>
-                                    <div class="list-group list-group-flush bg-transparent pe-2" id="chatListGroup">
-                                        <% chatBookings.forEach(booking => { %>
-                                            <div class="list-group-item chat-item bg-transparent border-bottom border-secondary border-opacity-25 py-3 p-3 d-flex align-items-center gap-3" 
-                                                 id="chat-item-<%= booking.id %>"
-                                                 onclick="openInlineChat('<%= booking.id %>', '<%= booking.trainer_name %>')">
-                                                <div class="bg-white bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center shadow-sm border border-white border-opacity-10 shrink-0" style="width: 50px; height: 50px; min-width: 50px;">
-                                                    <i class="fas fa-user-tie text-white opacity-75 fs-5"></i>
-                                                </div>
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h6 class="fw-bold text-white mb-0 text-truncate"><%= booking.trainer_name %></h6>
-                                                    <small class="text-muted d-block text-truncate"><%= new Date(booking.booking_date).toLocaleDateString() %></small>
-                                                </div>
-                                                <i class="fas fa-chevron-right opacity-50 ms-auto text-white"></i>
-                                            </div>
-                                        <% }) %>
-                                    </div>
-                                <% } else { %>
-                                    <div class="text-center py-5 px-3">
-                                        <div class="bg-white bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
-                                            <i class="fas fa-comment-slash fs-4 text-muted"></i>
-                                        </div>
-                                        <h6 class="text-white fw-bold mb-1">No trainers yet</h6>
-                                        <small class="text-muted">Chat unlocks after booking.</small>
-                                    </div>
-                                <% } %>
-                            </div>
 
-                            <!-- Right Col: Active Chat Window -->
-                            <div class="col-12 col-md-7 col-lg-8 chat-view-col bg-dark bg-opacity-25 position-relative">
-                                
-                                <!-- Empty State -->
-                                <div id="chatEmptyState" class="d-flex flex-column align-items-center justify-content-center h-100 text-center px-4 w-100 position-absolute top-0 start-0 z-1" style="background: #1e293b;">
-                                    <div class="bg-slate-700 bg-opacity-50 p-4 rounded-circle mb-4">
-                                        <i class="fas fa-paper-plane fa-3x text-slate-400"></i>
-                                    </div>
-                                    <h4 class="text-white fw-bold">Your Messages</h4>
-                                    <p class="text-muted">Select a trainer from the left to start chatting instantly.</p>
-                                </div>
-
-                                <!-- Active Chat Interface -->
-                                <div id="chatActiveWindow" class="d-none flex-column h-100 w-100 position-relative z-2 bg-transparent">
-                                    <div class="chat-offcanvas-header d-flex justify-content-between align-items-center shadow-sm">
-                                        <h5 class="mb-0 fw-bold d-flex align-items-center text-white" style="font-size: 1.15rem;">
-                                            <div class="bg-primary p-2 rounded-circle me-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 35px; height: 35px;">
-                                                <i class="fas fa-dumbbell text-white small"></i>
-                                            </div>
-                                            <span id="chatTrainerName">Trainer Name</span>
-                                        </h5>
-                                    </div>
-                                    
-                                    <div class="chat-messages flex-grow-1" id="chatMessagesArea" style="overflow-y: auto; padding: 1.5rem;">
-                                        <!-- Messages dynamically loaded here -->
-                                    </div>
-                                    
-                                    <div class="chat-input-area d-flex align-items-center p-3">
-                                        <input type="text" id="chatMessageInput" class="chat-input-box" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-                                        <button class="chat-send-btn shadow" onclick="sendChatMessage()">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -414,103 +332,7 @@
             }
         }
     </script>
-    <script>
-        // --- Chat System Logic ---
-        let currentChatBookingId = null;
-        let chatPollInterval = null;
-        let lastMsgCount = 0;
-        function openInlineChat(bookingId, trainerName) {
-            currentChatBookingId = bookingId;
-            lastMsgCount = 0; // Reset tracking for new chat session
-            
-            // Highlight active item
-            document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active-chat'));
-            const activeEl = document.getElementById('chat-item-' + bookingId);
-            if(activeEl) activeEl.classList.add('active-chat');
 
-            // Swap Windows
-            document.getElementById('chatEmptyState').classList.add('d-none');
-            document.getElementById('chatActiveWindow').classList.remove('d-none');
-            document.getElementById('chatActiveWindow').classList.add('d-flex');
-
-            document.getElementById('chatTrainerName').innerText = trainerName;
-            document.getElementById('chatMessagesArea').innerHTML = '<div class="text-center text-white mt-5"><div class="spinner-border text-primary" role="status"></div><br><span class="mt-2 text-muted">Connecting...</span></div>';
-            
-            clearInterval(chatPollInterval);
-            fetchMessages();
-            chatPollInterval = setInterval(fetchMessages, 3000);
-        }
-
-        async function fetchMessages() {
-            if (!currentChatBookingId) return;
-            try {
-                const url = '/chat/' + currentChatBookingId + '?t=' + Date.now();
-                const res = await fetch(url, { cache: 'no-store' });
-                if (!res.ok) {
-                    const errText = await res.text();
-                    document.getElementById('chatMessagesArea').innerHTML = '<div class="text-danger p-3">Server error ' + res.status + ': ' + errText + '</div>';
-                    return;
-                }
-                const result = await res.json();
-                if (result.success) {
-                    renderMessages(result.messages);
-                } else {
-                    document.getElementById('chatMessagesArea').innerHTML = '<div class="text-danger p-3">Error: ' + result.error + '</div>';
-                }
-            } catch (err) {
-                console.error('Failed to fetch messages:', err);
-            }
-        }
-
-        function renderMessages(messages) {
-            const area = document.getElementById('chatMessagesArea');
-            if (!messages || messages.length === 0) {
-                area.innerHTML = '<div class="text-center text-muted mt-5 opacity-50"><i class="fas fa-comment-slash fa-3x mb-3"></i><br>No messages yet. Start the conversation!</div>';
-                lastMsgCount = 0;
-                return;
-            }
-
-            // Anti-flicker: Only update if message count changed
-            if (messages.length === lastMsgCount) return;
-            lastMsgCount = messages.length;
-
-            let html = '';
-            messages.forEach(m => {
-                const isMine = m.sender_type === 'user';
-                const time = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                html += `<div class="chat-msg ${isMine ? 'sent' : 'received'} shadow-sm">
-                    <div>${m.content}</div>
-                    <div style="font-size:0.65rem;opacity:0.7;text-align:right;margin-top:4px;">${time}</div>
-                </div>`;
-            });
-            area.innerHTML = html;
-            area.scrollTop = area.scrollHeight;
-        }
-
-        async function sendChatMessage() {
-            const input = document.getElementById('chatMessageInput');
-            const content = input.value.trim();
-            if (!content || !currentChatBookingId) return;
-            input.value = '';
-            try {
-                const res = await fetch('/chat/' + currentChatBookingId, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content })
-                });
-                const result = await res.json();
-                if (result.success) {
-                    fetchMessages();
-                } else {
-                    showToast('Send error: ' + result.error, 'error');
-                    input.value = content; // restore message
-                }
-            } catch (err) {
-                showToast('Network error: ' + err.message, 'error');
-                input.value = content;
-            }
-        }
-    </script>
     
     <!-- Reschedule Modal -->
     <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-hidden="true">
