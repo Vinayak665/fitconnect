@@ -208,10 +208,10 @@
                                             <% trainers.forEach(trainer => { %>
                                                 <tr>
                                                     <td class="py-3">
-                                                        <% let imgSrc = trainer.profile_image ? (trainer.profile_image.startsWith('http') ? trainer.profile_image : '/uploads/' + trainer.profile_image) : '/images/default-avatar.png'; %>
+                                                        <% let imgSrc = trainer.profile_image ? (trainer.profile_image.startsWith('http') ? trainer.profile_image : '/uploads/' + trainer.profile_image) : '/images/default-avatar.svg'; %>
                                                         <div class="position-relative d-inline-block">
                                                             <div class="position-absolute w-100 h-100 rounded-circle bg-danger opacity-25" style="filter: blur(10px); transform: scale(1.1);"></div>
-                                                            <img src="<%= imgSrc %>" class="rounded-circle shadow-sm border border-2 border-white border-opacity-25 position-relative" width="60" height="60" style="object-fit: cover; object-position: center top; z-index: 2;" onerror="this.src='/images/default-avatar.png'">
+                                                            <img src="<%= imgSrc %>" class="rounded-circle shadow-sm border border-2 border-white border-opacity-25 position-relative" width="60" height="60" style="object-fit: cover; object-position: center top; z-index: 2;" onerror="this.onerror=null; this.src='/images/default-avatar.svg'">
                                                         </div>
                                                     </td>
                                                     <td class="py-3">

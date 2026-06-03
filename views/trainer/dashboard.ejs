@@ -112,7 +112,7 @@
     <%- include('../partials/notifications') %>
     <% 
       let trainerData = typeof trainer !== 'undefined' ? trainer : null;
-      let imgSrc = '/images/default-avatar.png';
+      let imgSrc = '/images/default-avatar.svg';
       if (trainerData && trainerData.profile_image) {
           imgSrc = trainerData.profile_image.startsWith('http') ? trainerData.profile_image : '/uploads/' + trainerData.profile_image;
       }
@@ -161,7 +161,7 @@
                             <% } %>
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle d-flex align-items-center glass-panel rounded-pill py-2 px-3 border-0" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                    <img class="img-profile rounded-circle border border-2 border-primary me-2" src="<%= imgSrc %>" width="32" height="32" style="object-fit:cover; object-position: center top;" onerror="this.src='/images/default-avatar.png'">
+                                    <img class="img-profile rounded-circle border border-2 border-primary me-2" src="<%= imgSrc %>" width="32" height="32" style="object-fit:cover; object-position: center top;" onerror="this.onerror=null; this.src='/images/default-avatar.svg'">
                                     <span class="d-none d-lg-inline text-white small fw-bold"><%= trainer.name || 'Trainer' %></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3">
@@ -487,7 +487,7 @@
                                                     <div class="col-auto">
                                                         <div class="position-relative d-inline-block">
                                                             <div class="position-absolute w-100 h-100 rounded-circle bg-primary opacity-25" style="filter: blur(15px); transform: scale(1.1);"></div>
-                                                            <img src="<%= imgSrc %>" class="position-relative rounded-circle shadow-sm border border-2 border-white border-opacity-25 p-1" width="130" height="130" style="object-fit: cover; object-position: center top; z-index: 2;" onerror="this.src='/images/default-avatar.png'">
+                                                            <img src="<%= imgSrc %>" class="position-relative rounded-circle shadow-sm border border-2 border-white border-opacity-25 p-1" width="130" height="130" style="object-fit: cover; object-position: center top; z-index: 2;" onerror="this.onerror=null; this.src='/images/default-avatar.svg'">
                                                             <label for="profile_image_input" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 cursor-pointer shadow border border-white border-opacity-50" style="cursor:pointer; z-index: 5;">
                                                                 <i class="fas fa-camera"></i>
                                                             </label>
