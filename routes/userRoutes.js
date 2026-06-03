@@ -166,6 +166,11 @@ router.get('/user-login', (req, res) => {
 
 router.post('/user/register', async (req, res) => {
     try {
+        const { password } = req.body;
+        if (!password || password.length < 8) {
+            const redirectParam = req.body.redirect ? `&redirect=${encodeURIComponent(req.body.redirect)}` : '';
+            return res.redirect(req.header('Referer') || `/login?error=Password must be at least 8 characters long.${redirectParam}`);
+        }
         await User.create(req.body);
         const redirectParam = req.body.redirect ? `&redirect=${encodeURIComponent(req.body.redirect)}` : '';
         res.redirect(`/login?success=Registration successful! Please login.${redirectParam}`);
@@ -410,6 +415,10 @@ router.post('/reset-password', async (req, res) => {
 
     if (password !== confirmPassword) {
         return res.redirect(req.header('Referer') || '/forgot-password?error=Passwords do not match.');
+    }
+
+    if (!password || password.length < 8) {
+        return res.redirect(req.header('Referer') || '/forgot-password?error=Password must be at least 8 characters long.');
     }
 
     try {

@@ -3,6 +3,9 @@ const bcrypt = require('bcryptjs');
 
 class Trainer {
     static async create(trainerData) {
+        if (!trainerData.password || trainerData.password.length < 8) {
+            throw new Error('Password must be at least 8 characters long');
+        }
         const hashedPassword = await bcrypt.hash(trainerData.password, 10);
         
         const { data, error } = await supabase
@@ -179,6 +182,9 @@ class Trainer {
     }
 
     static async updatePassword(id, newPassword) {
+        if (!newPassword || newPassword.length < 8) {
+            throw new Error('Password must be at least 8 characters long');
+        }
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         const { error } = await supabase
             .from('trainers')

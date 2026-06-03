@@ -101,6 +101,11 @@ router.get('/request', (req, res) => {
 
 router.post('/request', upload.fields([{name: 'profile_image', maxCount: 1}, {name: 'certifications', maxCount: 5}]), async (req, res) => {
     try {
+        const { password } = req.body;
+        if (!password || password.length < 8) {
+            return res.redirect(req.header('Referer') || '/trainer/request?error=Password must be at least 8 characters long.');
+        }
+
         let profileImageUrl = null;
         if (req.files && req.files.profile_image && req.files.profile_image[0]) {
             const file = req.files.profile_image[0];
