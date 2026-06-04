@@ -122,7 +122,7 @@
 
                 <div class="p-4 p-md-5">
                     <div class="d-sm-flex align-items-center justify-content-between mb-5">
-                        <h1 class="h2 mb-0 fw-bold" style="letter-spacing: -0.5px; color: #1e293b;">Account Settings</h1>
+                        <h1 class="h2 mb-0 fw-bold" style="letter-spacing: -0.5px; color: #f8fafc;">Account Settings</h1>
                     </div>
 
                     <div class="row justify-content-center">
@@ -134,7 +134,7 @@
                                             <div class="position-absolute w-100 h-100 rounded-circle bg-primary opacity-25" style="filter: blur(15px); transform: scale(1.1);"></div>
                                             <img src="<%= user.profile_image ? (user.profile_image.startsWith('http') ? user.profile_image : '/uploads/' + user.profile_image) : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' %>" class="position-relative rounded-circle shadow-sm border border-2 border-white border-opacity-25" style="width: 130px; height: 130px; object-fit: cover; object-position: center top; z-index: 2;">
                                         </div>
-                                        <h4 class="fw-bold mb-1" style="color: #1e293b;"><%= user.name %></h4>
+                                        <h4 class="fw-bold mb-1" style="color: #f8fafc;"><%= user.name %></h4>
                                         <p class="text-muted small mb-0"><i class="fas fa-envelope me-2 opacity-75"></i><%= user.email %></p>
                                     </div>
                                     
@@ -160,7 +160,7 @@
                                     <hr class="my-5 border-secondary border-opacity-50">
                                     
                                     <div class="d-grid gap-3 d-md-flex justify-content-md-end">
-                                        <a href="/dashboard" class="btn btn-outline-secondary px-5 rounded-pill fw-medium py-3" style="border-color: #1e293b; color: #1e293b;">Cancel</a>
+                                        <a href="/dashboard" class="btn btn-outline-secondary px-5 rounded-pill fw-medium py-3" style="border-color: #475569; color: #cbd5e1;">Cancel</a>
                                         <button type="submit" class="btn btn-modern px-5 rounded-pill shadow fs-6 fw-bold text-white py-3"><i class="fas fa-save me-2"></i> Save Changes</button>
                                     </div>
                                 </form>
