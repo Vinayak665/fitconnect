@@ -4,7 +4,7 @@ const Admin = require('../models/Admin');
 const Trainer = require('../models/Trainer');
 const User = require('../models/User');
 const Booking = require('../models/Booking');
-const { sendTrainerApprovalEmail } = require('../utils/mailer');
+const { sendTrainerApprovalEmail, sendTrainerRejectionEmail } = require('../utils/mailer');
 
 // Middleware
 const isAuthenticated = (req, res, next) => {
@@ -70,7 +70,15 @@ router.post('/trainers/:id/approve', isAuthenticated, async (req, res) => {
 });
 
 router.post('/trainers/:id/reject', isAuthenticated, async (req, res) => {
-    await Trainer.updateStatus(req.params.id, 'rejected');
+    try {
+        await Trainer.updateStatus(req.params.id, 'rejected');
+        const trainer = await Trainer.findById(req.params.id);
+        if (trainer && trainer.email) {
+            await sendTrainerRejectionEmail(trainer.email, trainer.name);
+        }
+    } catch (err) {
+        console.error("Error sending trainer rejection email:", err);
+    }
     res.redirect('/admin/trainers');
 });
 

@@ -138,8 +138,40 @@ async function sendTrainerApprovalEmail(trainerEmail, trainerName, loginUrl) {
     });
 }
 
+async function sendTrainerRejectionEmail(trainerEmail, trainerName) {
+    const html = `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e5e7eb; border-radius: 16px; background-color: #ffffff;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #ef4444; margin: 0;">FitConnect</h1>
+                <p style="color: #6b7280; font-size: 14px;">Your Fitness Journey, Simplified</p>
+            </div>
+            
+            <h2 style="color: #111827; font-size: 20px; text-align: center;">Application Status Update</h2>
+            
+            <p style="color: #4b5563; line-height: 1.6;">Hello <strong>${trainerName}</strong>,</p>
+            <p style="color: #4b5563; line-height: 1.6;">Thank you for your interest in joining FitConnect as a verified trainer.</p>
+            <p style="color: #4b5563; line-height: 1.6;">After carefully reviewing your application, we regret to inform you that your request has been <strong>DECLINED</strong> at this time.</p>
+            
+            <p style="color: #4b5563; line-height: 1.6;">If you believe this was an error or would like to submit additional credentials, please feel free to reach out to our support team.</p>
+            
+            <p style="color: #4b5563; line-height: 1.6;">Best regards,<br>The FitConnect Team</p>
+            
+            <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #f3f4f6;">
+                <p style="color: #9ca3af; font-size: 12px;">&copy; ${new Date().getFullYear()} FitConnect. All rights reserved.</p>
+            </div>
+        </div>
+    `;
+
+    return sendEmail({
+        to: trainerEmail,
+        subject: 'FitConnect Trainer Application Update',
+        html
+    });
+}
+
 module.exports = {
     sendEmail,
     sendBookingStatusEmail,
-    sendTrainerApprovalEmail
+    sendTrainerApprovalEmail,
+    sendTrainerRejectionEmail
 };
